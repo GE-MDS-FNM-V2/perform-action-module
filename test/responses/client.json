@@ -1,0 +1,8 @@
+{
+  "radio_id": 0,
+  "type": "http",
+  "protocol": "jsonrpc",
+  "uri": "0.0.0.0",
+  "username": "username",
+  "password": "password"
+}

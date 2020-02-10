@@ -1,0 +1,159 @@
+{
+  "name": "@ge-fnm/perform-action-module",
+  "version": "0.0.0-development",
+  "description": "",
+  "keywords": [],
+  "main": "dist/bundle-node.js",
+  "browser": "dist/bundle-web.js",
+  "typings": "dist/types/index.d.ts",
+  "files": [
+    "dist/**/*.*"
+  ],
+  "private": false,
+  "author": "Matt Thyng <matthyng@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "license": "MIT",
+  "engines": {
+    "node": ">=6.0.0"
+  },
+  "scripts": {
+    "lint": "tslint  --project tsconfig.json -t codeFrame 'src/**/*.ts' 'test/**/*.ts'",
+    "prebuild": "rimraf dist",
+    "docs": "typedoc --out docs --target es6 --theme minimal --mode file src",
+    "build": "webpack && npm run docs",
+    "test": "jest --coverage",
+    "test:watch": "jest --coverage --watch --verbose",
+    "test:prod": "npm run lint && npm run test -- --no-cache",
+    "report-coverage": "cat ./coverage/lcov.info | coveralls",
+    "semantic-release": "semantic-release",
+    "semantic-release-prepare": "ts-node tools/semantic-release-prepare"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run docs && git add docs && lint-staged",
+      "prepare-commit-msg": "exec < /dev/tty && git cz --hook || true",
+      "commit-msg": "commitlint -E  HUSKY_GIT_PARAMS"
+    }
+  },
+  "release": {
+    "branches": [
+      "master",
+      {
+        "name": "next",
+        "prerelease": true
+      }
+    ]
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "lint-staged": {
+    "{src,test}/**/*.ts": [
+      "prettier --write",
+      "git add"
+    ]
+  },
+  "config": {
+    "commitizen": {
+      "path": "node_modules/cz-conventional-changelog"
+    }
+  },
+  "jest": {
+    "transform": {
+      ".(ts|tsx)": "ts-jest"
+    },
+    "testEnvironment": "node",
+    "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|tsx|js)$",
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js"
+    ],
+    "testPathIgnorePatterns": [
+      "/node_modules/",
+      "/dist/"
+    ],
+    "coveragePathIgnorePatterns": [
+      "/node_modules/",
+      "/test/"
+    ],
+    "coverageThreshold": {
+      "global": {
+        "branches": 95,
+        "functions": 85,
+        "lines": 95,
+        "statements": 95
+      }
+    },
+    "collectCoverageFrom": [
+      "src/**/*.{js,ts}"
+    ]
+  },
+  "prettier": {
+    "semi": false,
+    "singleQuote": true
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ],
+    "rules": {
+      "subject-case": [
+        2,
+        "never",
+        [
+          "start-case",
+          "pascal-case"
+        ]
+      ]
+    }
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^8.3.5",
+    "@commitlint/config-conventional": "^8.3.4",
+    "@ge-fnm/action-object": "^2.0.1",
+    "@types/jest": "^25.1.2",
+    "@types/node": "^13.7.0",
+    "axios": "^0.19.2",
+    "colors": "^1.4.0",
+    "commitizen": "^4.0.3",
+    "coveralls": "^3.0.9",
+    "cross-env": "^7.0.0",
+    "cz-conventional-changelog": "^3.1.0",
+    "husky": "^4.2.1",
+    "jest": "25.1.0",
+    "jest-config": "^25.1.0",
+    "lint-staged": "^10.0.7",
+    "lodash.camelcase": "^4.3.0",
+    "prettier": "^1.19.1",
+    "prompt": "^1.0.0",
+    "replace-in-file": "^5.0.2",
+    "rimraf": "^3.0.2",
+    "semantic-release": "^17.0.2",
+    "shelljs": "^0.8.3",
+    "travis-deploy-once": "^5.0.11",
+    "ts-jest": "^25.2.0",
+    "ts-loader": "^6.2.1",
+    "ts-node": "^8.6.2",
+    "tslint": "^6.0.0",
+    "tslint-config-prettier": "^1.18.0",
+    "tslint-config-standard": "^9.0.0",
+    "typedoc": "^0.16.9",
+    "typescript": "^3.7.5",
+    "webpack-cli": "^3.3.10"
+  },
+  "dependencies": {
+    "@ge-fnm/action-object": "^2.0.1",
+    "browser-or-node": "^1.2.1",
+    "handlebars": "4.7.3",
+    "immutable": "^4.0.0-rc.12",
+    "tsc-watch": "^4.1.0",
+    "typescript-map": "^0.0.7",
+    "util": "^0.12.1",
+    "util-inspect": "^0.1.8",
+    "webpack": "^4.41.5"
+  }
+}

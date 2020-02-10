@@ -1,0 +1,17 @@
+# The important part here is that it doesnt include the dist folder
+# if the dist folder is ignored by npm, it wont publish the compiled code
+
+# this npmignore file is required because if it doesnt exist, npm will
+# abide by .gitignore. This is a problem because the .gitignore file 
+# ignores the dist folder
+
+node_modules
+coverage
+.nyc_output
+.DS_Store
+*.log
+.vscode
+.idea
+compiled
+.awcache
+.rpt2_cache
