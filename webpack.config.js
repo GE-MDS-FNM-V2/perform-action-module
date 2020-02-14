@@ -18,7 +18,8 @@ const createConfig = ({ libraryTarget, target }) => {
       ]
     },
     externals: {
-      '@ge-fnm/action-object': '@ge-fnm/action-object'
+      '@ge-fnm/action-object': '@ge-fnm/action-object',
+      axios: 'axios'
     },
     resolve: {
       extensions: ['.tsx', '.ts', '.js']

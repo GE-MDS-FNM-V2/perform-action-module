@@ -3,7 +3,6 @@ import { Client } from './clients/client'
 import { ClientType } from './enums/enums'
 import { v1, ActionTypeV1, ActionObjectInformationV1 } from '@ge-fnm/action-object'
 import { TSMap } from 'typescript-map'
-import { rejects } from 'assert'
 
 export class Executer {
   private clientObjs = new TSMap<string, Client>()

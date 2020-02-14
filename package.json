@@ -112,7 +112,8 @@
     }
   },
   "peerDependencies": {
-    "@ge-fnm/action-object": "3.0.0-next.1"
+    "@ge-fnm/action-object": "3.0.0-next.1",
+    "axios": "^0.19.2"
   },
   "devDependencies": {
     "@commitlint/cli": "^8.3.5",
@@ -140,17 +141,13 @@
     "tslint-config-standard": "^9.0.0",
     "typedoc": "^0.16.9",
     "typescript": "^3.7.5",
-    "webpack-cli": "^3.3.10"
+    "webpack-cli": "^3.3.10",
+    "tsc-watch": "^4.1.0",
+    "webpack": "^4.41.5"
   },
   "dependencies": {
     "@ge-fnm/action-object": "^2.0.1",
     "browser-or-node": "^1.2.1",
-    "handlebars": "4.7.3",
-    "immutable": "^4.0.0-rc.12",
-    "tsc-watch": "^4.1.0",
-    "typescript-map": "^0.0.7",
-    "util": "^0.12.1",
-    "util-inspect": "^0.1.8",
-    "webpack": "^4.41.5"
+    "typescript-map": "^0.0.7"
   }
 }
