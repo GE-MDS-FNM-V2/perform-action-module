@@ -7,11 +7,10 @@ import { strictEqual, rejects } from 'assert'
 import { checkServerIdentity } from 'tls'
 // import { isBrowser, isNode } from 'browser-or-node'
 
-describe('Perform Action Module', async () => {
+describe('Perform Action Module', () => {
   // perform-action-module
   it('Can create executer and add a Client', async () => {
     let executer = new Executer()
-    // tslint:disable-next-line
     await executer
       .addclient('0.0.0.0', ClientType.HTTP, ProtocolType.JSONRPC, 'admin', 'admin')
       .then(response => {
@@ -41,7 +40,6 @@ describe('Perform Action Module', async () => {
           uri: URL
         })
         let serilizedAction = action.serialize()
-        // tslint:disable-next-line
         await executer
           .execute(serilizedAction)
           .then(async response => {
@@ -103,7 +101,6 @@ describe('Perform Action Module', async () => {
     })
 
     let serilizedAction = action.serialize()
-    // tslint:disable-next-line
     await executer
       .execute(serilizedAction)
       .then(async response => {
@@ -134,7 +131,6 @@ describe('Perform Action Module', async () => {
   // httpClient
   it('Can properly log into a radio', async () => {
     let client = new HttpClient('98.10.43.107', ProtocolType.JSONRPC, 'admin', 'd0NotCommit')
-    // tslint:disable-next-line
     await client
       .login()
       .then(async response => {
@@ -149,7 +145,6 @@ describe('Perform Action Module', async () => {
 
   it('Passes when no session exists when killing a session', async () => {
     let client = new HttpClient('98.10.43.107', ProtocolType.JSONRPC, 'admin', 'd0NotCommit')
-    // tslint:disable-next-line
     await client
       .killsession()
       .then(response => {
@@ -199,7 +194,6 @@ describe('Perform Action Module', async () => {
       uri: '0.0.0.0'
     })
     client.setLogin(true)
-    // tslint:disable-next-line
     await client
       .call(action.information)
       .then(response => {
@@ -212,7 +206,6 @@ describe('Perform Action Module', async () => {
 
   it('Resolved when login not needed', async () => {
     let client = new HttpClient('0.0.0.0', ProtocolType.JSONRPC)
-    // tslint:disable-next-line
     await client
       .login()
       .then(response => {
@@ -225,7 +218,6 @@ describe('Perform Action Module', async () => {
 
   it('Resolved when login fails', async () => {
     let client = new HttpClient('98.10.43.107', ProtocolType.JSONRPC, 'admin', 'admin')
-    // tslint:disable-next-line
     await client
       .login()
       .then(response => {
