@@ -111,7 +111,7 @@
     }
   },
   "peerDependencies": {
-    "@ge-fnm/action-object": "3.0.0-next.1",
+    "@ge-fnm/action-object": "3.0.0-next.2",
     "axios": "^0.19.2"
   },
   "devDependencies": {
@@ -119,6 +119,7 @@
     "@commitlint/config-conventional": "^8.3.4",
     "@types/jest": "^25.1.2",
     "@types/node": "^13.7.0",
+    "@ge-fnm/action-object": "3.0.0-next.2",
     "axios": "^0.19.2",
     "commitizen": "^4.0.3",
     "coveralls": "^3.0.9",
@@ -145,7 +146,6 @@
     "webpack": "^4.41.5"
   },
   "dependencies": {
-    "@ge-fnm/action-object": "^2.0.1",
     "browser-or-node": "^1.2.1",
     "typescript-map": "^0.0.7"
   }

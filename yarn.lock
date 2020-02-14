@@ -288,10 +288,10 @@
   dependencies:
     find-up "^4.0.0"
 
-"@ge-fnm/action-object@^2.0.1":
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/@ge-fnm/action-object/-/action-object-2.0.1.tgz#3b62ef98087b95652fa509748147557860e56b34"
-  integrity sha512-8TvOKnDxo/eouC/rpluMt+Sqx63GiOqHJSmADLiTeBHWmNsKVQ2ltHlkvuqnI7X1Qdlm1QXVHgc4466bsCC1Ag==
+"@ge-fnm/action-object@3.0.0-next.2":
+  version "3.0.0-next.2"
+  resolved "https://registry.yarnpkg.com/@ge-fnm/action-object/-/action-object-3.0.0-next.2.tgz#7b40a004355ae8a1bc0831f1348b946b9ebc83b0"
+  integrity sha512-ONY0lLm2mOdnR/onDqEeeYa0veA7J5ZYHctssdq/bssZ8+pegzqeyYqVagy+Y5ltgLWLHoOSez6Z40gMWoC9BQ==
 
 "@iarna/cli@^1.2.0":
   version "1.2.0"

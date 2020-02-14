@@ -36,7 +36,10 @@ describe('Perform Action Module', () => {
           },
           modifyingValue: '',
           path: ['/serv:services/snmp:snmp/agent/enabled'],
-          response: undefined,
+          response: {
+            error: null,
+            data: null
+          },
           uri: URL
         })
         let serilizedAction = action.serialize()
@@ -65,7 +68,10 @@ describe('Perform Action Module', () => {
       },
       modifyingValue: '',
       path: ['/serv:services/snmp:snmp/agent/enabled'],
-      response: undefined,
+      response: {
+        error: null,
+        data: null
+      },
       uri: URL
     })
     let serilizedAction = action.serialize()
@@ -96,7 +102,10 @@ describe('Perform Action Module', () => {
       },
       modifyingValue: '',
       path: [],
-      response: undefined,
+      response: {
+        error: null,
+        data: null
+      },
       uri: URL
     })
 
@@ -166,7 +175,10 @@ describe('Perform Action Module', () => {
       },
       modifyingValue: '',
       path: ['/serv:services/snmp:snmp/agent/enabled'],
-      response: undefined,
+      response: {
+        error: null,
+        data: null
+      },
       uri: '0.0.0.0'
     })
     await client
@@ -190,7 +202,10 @@ describe('Perform Action Module', () => {
       },
       modifyingValue: '',
       path: ['/serv:services/snmp:snmp/agent/enabled'],
-      response: undefined,
+      response: {
+        error: null,
+        data: null
+      },
       uri: '0.0.0.0'
     })
     client.setLogin(true)

@@ -37,7 +37,7 @@ export class Executer {
         )
           .then(response => {
             // Either Login failed, or login succeeded, or no need to login
-            actionObj.information.response = response
+            actionObj.information.response.data = response
             resolve(actionObj.serialize())
           })
           .catch(error => {
@@ -52,7 +52,7 @@ export class Executer {
             .call(actionObj.information)
             .then(response2 => {
               // Action succeeded
-              actionObj.information.response = response2
+              actionObj.information.response.data = response2
               resolve(actionObj.serialize())
             })
             .catch(error2 => {
@@ -61,7 +61,7 @@ export class Executer {
               reject(error2)
             })
         } else {
-          actionObj.information.response =
+          actionObj.information.response.data =
             'Not a valid radio uri. Please initialize radio before sending commands'
           reject(actionObj.serialize())
         }

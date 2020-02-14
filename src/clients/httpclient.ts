@@ -67,7 +67,7 @@ export class HttpClient implements Client {
             .post(this.uri, trans)
             .then(response => {
               this.protocol.setTrans(response.data)
-              this.protocol.setPath(action.path)
+              this.protocol.setPath(action.path || [])
               let cmd = this.protocol.getCommand('getSchema')
               this.axiosSession
                 .post(this.uri, cmd)
