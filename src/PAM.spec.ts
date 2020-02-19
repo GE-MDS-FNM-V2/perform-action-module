@@ -330,8 +330,7 @@ describe('Perform Action Module', () => {
   it('Has loggedin set to false by default', () => {
     let client = new HttpClient('0.0.0.0', ProtocolType.JSONRPC)
     expect(client.getLoginStatus()).toEqual(false)
-  })
-
+ 
   // JSONRPC
   it('Can add a transaction token to JSONRPC', () => {
     let jsonrpc = new Jsonrpc('admin', 'admin')
