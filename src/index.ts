@@ -41,8 +41,8 @@ export class Executer {
             resolve(actionObj.serialize())
           })
           .catch(addClientError => {
-            /* istanbul ignore next */
             // Either Axios error (connection refused), or Protocol is invalid
+            /* istanbul ignore next */
             addClientError = addClientError.toString()
             actionObj.information.response.error = `Error while adding client with uri ${key}. ${addClientError}`
             reject(actionObj.serialize())
