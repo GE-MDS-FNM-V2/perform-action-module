@@ -2371,6 +2371,9 @@ img {
 		<li class=" tsd-kind-enum">
 			<a href="../enums/protocoltype.html" class="tsd-kind-icon">Protocol<wbr>Type</a>
 		</li>
+		<li class=" tsd-kind-enum">
+			<a href="../enums/transtype.html" class="tsd-kind-icon">trans<wbr>Type</a>
+		</li>
 		<li class=" tsd-kind-class">
 			<a href="../classes/executer.html" class="tsd-kind-icon">Executer</a>
 		</li>
@@ -2386,11 +2389,17 @@ img {
 		<li class="current tsd-kind-interface">
 			<a href="httpprotocol.html" class="tsd-kind-icon">Http<wbr>Protocol</a>
 			<ul>
+				<li class=" tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
+					<a href="httpprotocol.html#commit" class="tsd-kind-icon">commit</a>
+				</li>
 				<li class=" tsd-kind-method tsd-parent-kind-interface">
 					<a href="httpprotocol.html#config" class="tsd-kind-icon">config</a>
 				</li>
 				<li class=" tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
-					<a href="httpprotocol.html#getcommand" class="tsd-kind-icon">get<wbr>Command</a>
+					<a href="httpprotocol.html#endtrans" class="tsd-kind-icon">end<wbr>Trans</a>
+				</li>
+				<li class=" tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
+					<a href="httpprotocol.html#getschema" class="tsd-kind-icon">get<wbr>Schema</a>
 				</li>
 				<li class=" tsd-kind-method tsd-parent-kind-interface">
 					<a href="httpprotocol.html#geturl" class="tsd-kind-icon">getURL</a>
@@ -2402,13 +2411,19 @@ img {
 					<a href="httpprotocol.html#logout" class="tsd-kind-icon">logout</a>
 				</li>
 				<li class=" tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
-					<a href="httpprotocol.html#readtrans" class="tsd-kind-icon">read<wbr>Trans</a>
-				</li>
-				<li class=" tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
 					<a href="httpprotocol.html#setpath" class="tsd-kind-icon">set<wbr>Path</a>
 				</li>
 				<li class=" tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
 					<a href="httpprotocol.html#settrans" class="tsd-kind-icon">set<wbr>Trans</a>
+				</li>
+				<li class=" tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
+					<a href="httpprotocol.html#setvalues" class="tsd-kind-icon">set<wbr>Values</a>
+				</li>
+				<li class=" tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
+					<a href="httpprotocol.html#transaction" class="tsd-kind-icon">transaction</a>
+				</li>
+				<li class=" tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
+					<a href="httpprotocol.html#validatecommit" class="tsd-kind-icon">validate<wbr>Commit</a>
 				</li>
 			</ul>
 		</li>
@@ -2457,14 +2472,18 @@ img {
 					<section class="tsd-index-section ">
 						<h3>Methods</h3>
 						<ul class="tsd-index-list">
+							<li class="tsd-kind-method tsd-parent-kind-interface tsd-is-inherited"><a href="httpprotocol.html#commit" class="tsd-kind-icon">commit</a></li>
 							<li class="tsd-kind-method tsd-parent-kind-interface"><a href="httpprotocol.html#config" class="tsd-kind-icon">config</a></li>
-							<li class="tsd-kind-method tsd-parent-kind-interface tsd-is-inherited"><a href="httpprotocol.html#getcommand" class="tsd-kind-icon">get<wbr>Command</a></li>
+							<li class="tsd-kind-method tsd-parent-kind-interface tsd-is-inherited"><a href="httpprotocol.html#endtrans" class="tsd-kind-icon">end<wbr>Trans</a></li>
+							<li class="tsd-kind-method tsd-parent-kind-interface tsd-is-inherited"><a href="httpprotocol.html#getschema" class="tsd-kind-icon">get<wbr>Schema</a></li>
 							<li class="tsd-kind-method tsd-parent-kind-interface"><a href="httpprotocol.html#geturl" class="tsd-kind-icon">getURL</a></li>
 							<li class="tsd-kind-method tsd-parent-kind-interface tsd-is-inherited"><a href="httpprotocol.html#login" class="tsd-kind-icon">login</a></li>
 							<li class="tsd-kind-method tsd-parent-kind-interface tsd-is-inherited"><a href="httpprotocol.html#logout" class="tsd-kind-icon">logout</a></li>
-							<li class="tsd-kind-method tsd-parent-kind-interface tsd-is-inherited"><a href="httpprotocol.html#readtrans" class="tsd-kind-icon">read<wbr>Trans</a></li>
 							<li class="tsd-kind-method tsd-parent-kind-interface tsd-is-inherited"><a href="httpprotocol.html#setpath" class="tsd-kind-icon">set<wbr>Path</a></li>
 							<li class="tsd-kind-method tsd-parent-kind-interface tsd-is-inherited"><a href="httpprotocol.html#settrans" class="tsd-kind-icon">set<wbr>Trans</a></li>
+							<li class="tsd-kind-method tsd-parent-kind-interface tsd-is-inherited"><a href="httpprotocol.html#setvalues" class="tsd-kind-icon">set<wbr>Values</a></li>
+							<li class="tsd-kind-method tsd-parent-kind-interface tsd-is-inherited"><a href="httpprotocol.html#transaction" class="tsd-kind-icon">transaction</a></li>
+							<li class="tsd-kind-method tsd-parent-kind-interface tsd-is-inherited"><a href="httpprotocol.html#validatecommit" class="tsd-kind-icon">validate<wbr>Commit</a></li>
 						</ul>
 					</section>
 				</div>
@@ -2472,6 +2491,24 @@ img {
 		</section>
 		<section class="tsd-panel-group tsd-member-group ">
 			<h2>Methods</h2>
+			<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
+				<a name="commit" class="tsd-anchor"></a>
+				<h3>commit</h3>
+				<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
+					<li class="tsd-signature tsd-kind-icon">commit<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
+				</ul>
+				<ul class="tsd-descriptions">
+					<li class="tsd-description">
+						<aside class="tsd-sources">
+							<p>Inherited from <a href="protocol.html">Protocol</a>.<a href="protocol.html#commit">commit</a></p>
+							<ul>
+								<li>Defined in <a href="https://github.com/GE-MDS-FNM-V2/perform-action-module/blob/5600305/src/protocols/protocol.ts#L6">protocols/protocol.ts:6</a></li>
+							</ul>
+						</aside>
+						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
+					</li>
+				</ul>
+			</section>
 			<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface">
 				<a name="config" class="tsd-anchor"></a>
 				<h3>config</h3>
@@ -2482,7 +2519,7 @@ img {
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/GE-MDS-FNM-V2/perform-action-module/blob/00ca44b/src/protocols/httpProtocol.ts#L5">protocols/httpProtocol.ts:5</a></li>
+								<li>Defined in <a href="https://github.com/GE-MDS-FNM-V2/perform-action-module/blob/5600305/src/protocols/httpProtocol.ts#L5">protocols/httpProtocol.ts:5</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">AxiosRequestConfig</span></h4>
@@ -2490,25 +2527,37 @@ img {
 				</ul>
 			</section>
 			<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
-				<a name="getcommand" class="tsd-anchor"></a>
-				<h3>get<wbr>Command</h3>
+				<a name="endtrans" class="tsd-anchor"></a>
+				<h3>end<wbr>Trans</h3>
 				<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
-					<li class="tsd-signature tsd-kind-icon">get<wbr>Command<span class="tsd-signature-symbol">(</span>commandStr<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
+					<li class="tsd-signature tsd-kind-icon">end<wbr>Trans<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
 				</ul>
 				<ul class="tsd-descriptions">
 					<li class="tsd-description">
 						<aside class="tsd-sources">
-							<p>Inherited from <a href="protocol.html">Protocol</a>.<a href="protocol.html#getcommand">getCommand</a></p>
+							<p>Inherited from <a href="protocol.html">Protocol</a>.<a href="protocol.html#endtrans">endTrans</a></p>
 							<ul>
-								<li>Defined in <a href="https://github.com/GE-MDS-FNM-V2/perform-action-module/blob/00ca44b/src/protocols/protocol.ts#L10">protocols/protocol.ts:10</a></li>
+								<li>Defined in <a href="https://github.com/GE-MDS-FNM-V2/perform-action-module/blob/5600305/src/protocols/protocol.ts#L16">protocols/protocol.ts:16</a></li>
 							</ul>
 						</aside>
-						<h4 class="tsd-parameters-title">Parameters</h4>
-						<ul class="tsd-parameters">
-							<li>
-								<h5>commandStr: <span class="tsd-signature-type">string</span></h5>
-							</li>
-						</ul>
+						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
+				<a name="getschema" class="tsd-anchor"></a>
+				<h3>get<wbr>Schema</h3>
+				<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
+					<li class="tsd-signature tsd-kind-icon">get<wbr>Schema<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
+				</ul>
+				<ul class="tsd-descriptions">
+					<li class="tsd-description">
+						<aside class="tsd-sources">
+							<p>Inherited from <a href="protocol.html">Protocol</a>.<a href="protocol.html#getschema">getSchema</a></p>
+							<ul>
+								<li>Defined in <a href="https://github.com/GE-MDS-FNM-V2/perform-action-module/blob/5600305/src/protocols/protocol.ts#L14">protocols/protocol.ts:14</a></li>
+							</ul>
+						</aside>
 						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
 					</li>
 				</ul>
@@ -2523,7 +2572,7 @@ img {
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/GE-MDS-FNM-V2/perform-action-module/blob/00ca44b/src/protocols/httpProtocol.ts#L7">protocols/httpProtocol.ts:7</a></li>
+								<li>Defined in <a href="https://github.com/GE-MDS-FNM-V2/perform-action-module/blob/5600305/src/protocols/httpProtocol.ts#L7">protocols/httpProtocol.ts:7</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -2547,7 +2596,7 @@ img {
 						<aside class="tsd-sources">
 							<p>Inherited from <a href="protocol.html">Protocol</a>.<a href="protocol.html#login">login</a></p>
 							<ul>
-								<li>Defined in <a href="https://github.com/GE-MDS-FNM-V2/perform-action-module/blob/00ca44b/src/protocols/protocol.ts#L6">protocols/protocol.ts:6</a></li>
+								<li>Defined in <a href="https://github.com/GE-MDS-FNM-V2/perform-action-module/blob/5600305/src/protocols/protocol.ts#L10">protocols/protocol.ts:10</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
@@ -2565,25 +2614,7 @@ img {
 						<aside class="tsd-sources">
 							<p>Inherited from <a href="protocol.html">Protocol</a>.<a href="protocol.html#logout">logout</a></p>
 							<ul>
-								<li>Defined in <a href="https://github.com/GE-MDS-FNM-V2/perform-action-module/blob/00ca44b/src/protocols/protocol.ts#L8">protocols/protocol.ts:8</a></li>
-							</ul>
-						</aside>
-						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
-					</li>
-				</ul>
-			</section>
-			<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
-				<a name="readtrans" class="tsd-anchor"></a>
-				<h3>read<wbr>Trans</h3>
-				<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
-					<li class="tsd-signature tsd-kind-icon">read<wbr>Trans<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
-				</ul>
-				<ul class="tsd-descriptions">
-					<li class="tsd-description">
-						<aside class="tsd-sources">
-							<p>Inherited from <a href="protocol.html">Protocol</a>.<a href="protocol.html#readtrans">readTrans</a></p>
-							<ul>
-								<li>Defined in <a href="https://github.com/GE-MDS-FNM-V2/perform-action-module/blob/00ca44b/src/protocols/protocol.ts#L4">protocols/protocol.ts:4</a></li>
+								<li>Defined in <a href="https://github.com/GE-MDS-FNM-V2/perform-action-module/blob/5600305/src/protocols/protocol.ts#L12">protocols/protocol.ts:12</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
@@ -2601,7 +2632,7 @@ img {
 						<aside class="tsd-sources">
 							<p>Inherited from <a href="protocol.html">Protocol</a>.<a href="protocol.html#setpath">setPath</a></p>
 							<ul>
-								<li>Defined in <a href="https://github.com/GE-MDS-FNM-V2/perform-action-module/blob/00ca44b/src/protocols/protocol.ts#L14">protocols/protocol.ts:14</a></li>
+								<li>Defined in <a href="https://github.com/GE-MDS-FNM-V2/perform-action-module/blob/5600305/src/protocols/protocol.ts#L22">protocols/protocol.ts:22</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -2625,7 +2656,7 @@ img {
 						<aside class="tsd-sources">
 							<p>Inherited from <a href="protocol.html">Protocol</a>.<a href="protocol.html#settrans">setTrans</a></p>
 							<ul>
-								<li>Defined in <a href="https://github.com/GE-MDS-FNM-V2/perform-action-module/blob/00ca44b/src/protocols/protocol.ts#L12">protocols/protocol.ts:12</a></li>
+								<li>Defined in <a href="https://github.com/GE-MDS-FNM-V2/perform-action-module/blob/5600305/src/protocols/protocol.ts#L20">protocols/protocol.ts:20</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -2635,6 +2666,72 @@ img {
 							</li>
 						</ul>
 						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
+				<a name="setvalues" class="tsd-anchor"></a>
+				<h3>set<wbr>Values</h3>
+				<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
+					<li class="tsd-signature tsd-kind-icon">set<wbr>Values<span class="tsd-signature-symbol">(</span>value<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
+				</ul>
+				<ul class="tsd-descriptions">
+					<li class="tsd-description">
+						<aside class="tsd-sources">
+							<p>Inherited from <a href="protocol.html">Protocol</a>.<a href="protocol.html#setvalues">setValues</a></p>
+							<ul>
+								<li>Defined in <a href="https://github.com/GE-MDS-FNM-V2/perform-action-module/blob/5600305/src/protocols/protocol.ts#L18">protocols/protocol.ts:18</a></li>
+							</ul>
+						</aside>
+						<h4 class="tsd-parameters-title">Parameters</h4>
+						<ul class="tsd-parameters">
+							<li>
+								<h5>value: <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">any</span></h5>
+							</li>
+						</ul>
+						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
+				<a name="transaction" class="tsd-anchor"></a>
+				<h3>transaction</h3>
+				<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
+					<li class="tsd-signature tsd-kind-icon">transaction<span class="tsd-signature-symbol">(</span>type<span class="tsd-signature-symbol">: </span><a href="../enums/transtype.html" class="tsd-signature-type">transType</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
+				</ul>
+				<ul class="tsd-descriptions">
+					<li class="tsd-description">
+						<aside class="tsd-sources">
+							<p>Inherited from <a href="protocol.html">Protocol</a>.<a href="protocol.html#transaction">transaction</a></p>
+							<ul>
+								<li>Defined in <a href="https://github.com/GE-MDS-FNM-V2/perform-action-module/blob/5600305/src/protocols/protocol.ts#L4">protocols/protocol.ts:4</a></li>
+							</ul>
+						</aside>
+						<h4 class="tsd-parameters-title">Parameters</h4>
+						<ul class="tsd-parameters">
+							<li>
+								<h5>type: <a href="../enums/transtype.html" class="tsd-signature-type">transType</a></h5>
+							</li>
+						</ul>
+						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
+				<a name="validatecommit" class="tsd-anchor"></a>
+				<h3>validate<wbr>Commit</h3>
+				<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
+					<li class="tsd-signature tsd-kind-icon">validate<wbr>Commit<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
+				</ul>
+				<ul class="tsd-descriptions">
+					<li class="tsd-description">
+						<aside class="tsd-sources">
+							<p>Inherited from <a href="protocol.html">Protocol</a>.<a href="protocol.html#validatecommit">validateCommit</a></p>
+							<ul>
+								<li>Defined in <a href="https://github.com/GE-MDS-FNM-V2/perform-action-module/blob/5600305/src/protocols/protocol.ts#L8">protocols/protocol.ts:8</a></li>
+							</ul>
+						</aside>
+						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
 					</li>
 				</ul>
 			</section>

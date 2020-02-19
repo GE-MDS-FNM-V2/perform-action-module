@@ -1,13 +1,21 @@
-import { TSMap } from 'typescript-map'
+import { transType } from '../enums/enums'
 
 export interface Protocol {
-  readTrans(): any
+  transaction(type: transType): any
+
+  commit(): any
+
+  validateCommit(): any
 
   login(): any
 
   logout(): any
 
-  getCommand(commandStr: string): any
+  getSchema(): any
+
+  endTrans(): any
+
+  setValues(value: any[] | any): any
 
   setTrans(transResponse?: any): void
 

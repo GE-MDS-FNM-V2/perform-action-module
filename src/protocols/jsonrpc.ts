@@ -1,12 +1,11 @@
 import { HttpProtocol } from './httpProtocol'
-import Axios, { AxiosRequestConfig, ResponseType } from 'axios'
-import { TSMap } from 'typescript-map'
+import { AxiosRequestConfig } from 'axios'
+import { transType } from '../enums/enums'
 
 export class Jsonrpc implements HttpProtocol {
   private th: number | undefined
   private cmdID: number
   private path: string = ''
-  private commandMap: TSMap<string, any>
   private username?: string
   private password?: string
 
@@ -14,19 +13,6 @@ export class Jsonrpc implements HttpProtocol {
     this.username = username
     this.password = password
     this.cmdID = 0
-    this.commandMap = new TSMap<string, any>()
-    this.mapCommands()
-  }
-
-  private schema = (th: number, path: string): command => {
-    let params = {
-      th: th,
-      path: path,
-      evaluate_when_entries: true,
-      insert_values: true,
-      levels: 3
-    }
-    return this.cmd('get_schema', params)
   }
 
   private cmd = (method: string, params?: object): command => {
@@ -41,8 +27,22 @@ export class Jsonrpc implements HttpProtocol {
     return cmd
   }
 
-  private mapCommands = () => {
-    this.commandMap.set('getSchema', this.schema)
+  getSchema = (): command => {
+    let params = {
+      th: this.th,
+      path: this.path,
+      evaluate_when_entries: true,
+      insert_values: true,
+      levels: 3
+    }
+    return this.cmd('get_schema', params)
+  }
+
+  endTrans = (): command => {
+    let params = {
+      th: this.th
+    }
+    return this.cmd('delete_trans', params)
   }
 
   getURL = (url: string): string => {
@@ -61,9 +61,9 @@ export class Jsonrpc implements HttpProtocol {
     return this.cmd('logout')
   }
 
-  readTrans = (): command => {
+  transaction = (type: transType): command => {
     let params: parameters = {
-      mode: 'read',
+      mode: type,
       tag: 'test'
     }
     return this.cmd('new_trans', params)
@@ -82,20 +82,26 @@ export class Jsonrpc implements HttpProtocol {
     return config
   }
 
+  validateCommit = () => {
+    let params = {
+      th: this.th
+    }
+    return this.cmd('validate_commit', params)
+  }
+
+  commit = () => {
+    let params = {
+      th: this.th
+    }
+    return this.cmd('commit', params)
+  }
+
   setTrans = (transResponse: transactionResponse) => {
     this.th = transResponse.result.th
   }
 
   getTrans = (): number | undefined => {
     return this.th
-  }
-
-  getCommand = (commandStr: string): command => {
-    if (this.commandMap.has(commandStr)) {
-      return this.commandMap.get(commandStr)(this.th, this.path)
-    } else {
-      throw new Error('ERROR:: Invalid command')
-    }
   }
 
   getPath = (): string => {
@@ -106,6 +112,18 @@ export class Jsonrpc implements HttpProtocol {
     for (let i = 0; i < path.length; i++) {
       this.path = this.path + '/' + path[i]
     }
+  }
+
+  setValues = (values: any[] | any) => {
+    if (values.length === 1) {
+      values = values[0]
+    }
+    let params = {
+      th: this.th,
+      path: this.path,
+      value: values
+    }
+    return this.cmd('set_value', params)
   }
 }
 

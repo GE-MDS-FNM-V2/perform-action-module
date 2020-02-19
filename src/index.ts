@@ -35,33 +35,36 @@ export class Executer {
           actionData.commData.username,
           actionData.commData.password
         )
-          .then(response => {
+          .then(addClientresponse => {
             // Either Login failed, or login succeeded, or no need to login
-            actionObj.information.response.data = response
+            actionObj.information.response.data = addClientresponse
             resolve(actionObj.serialize())
           })
-          .catch(error => {
+          .catch(addClientError => {
             /* istanbul ignore next */
             // Either Axios error (connection refused), or Protocol is invalid
-            reject(`Error while adding client with uri ${key}\nERROR: ${error}`)
+            addClientError = addClientError.toString()
+            actionObj.information.response.error = `Error while adding client with uri ${key}. ${addClientError}`
+            reject(actionObj.serialize())
           })
       } else {
         if (this.clientObjs.has(key)) {
           this.clientObjs
             .get(key)
             .call(actionObj.information)
-            .then(response2 => {
+            .then(getSetResponse => {
               // Action succeeded
-              actionObj.information.response.data = response2
+              actionObj.information.response.data = getSetResponse
               resolve(actionObj.serialize())
             })
-            .catch(error2 => {
+            .catch(getSetError => {
               // Axios error (connection refused), invalid action type, Not logged in
               /* istanbul ignore next */
-              reject(error2)
+              actionObj.information.response.error = getSetError.toString()
+              reject(actionObj.serialize())
             })
         } else {
-          actionObj.information.response.data =
+          actionObj.information.response.error =
             'Not a valid radio uri. Please initialize radio before sending commands'
           reject(actionObj.serialize())
         }
