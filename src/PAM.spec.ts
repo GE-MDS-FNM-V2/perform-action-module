@@ -89,7 +89,9 @@ describe('Perform Action Module', () => {
           })
           .catch(error => {
             let actionObjJson: ActionObjectInformationV1 = JSON.parse(error.toString())
-            strictEqual(actionObjJson.response.error, 'Error: GET/SET commands need a path')
+            expect(JSON.stringify(actionObjJson.response)).toEqual(
+              JSON.stringify({ error: 'Error: GET/SET commands need a path' })
+            )
           })
       })
   })

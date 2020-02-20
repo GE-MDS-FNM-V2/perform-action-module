@@ -1,3 +1,4 @@
+// TODO - update this to refer to action object types
 export enum ProtocolType {
   JSONRPC = 'JSONRPC',
   CLI = 'CLI'
