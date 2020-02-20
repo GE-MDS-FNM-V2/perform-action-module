@@ -1,7 +1,7 @@
 import { Jsonrpc } from '../protocols/jsonrpc'
 import Axios, { AxiosRequestConfig, AxiosInstance } from 'axios'
 import { Client } from './client'
-// import { ProtocolType } from '../enums/enums'
+import { transType } from '../enums/enums'
 import { ActionTypeV1, ActionObjectInformationV1 } from '@ge-fnm/action-object'
 import { HttpProtocol } from '../protocols/httpProtocol'
 
@@ -32,8 +32,6 @@ export class HttpClient implements Client {
           .post(this.uri, loginCmd)
           .then(response => {
             let responseStr = JSON.stringify(response.data)
-            console.log(response.data.result)
-            console.log('error' in response.data)
             /* istanbul ignore next */
             if (Object.keys(response.data.result).length === 0 && !('error' in response.data)) {
               this.loggedin = true
@@ -58,40 +56,68 @@ export class HttpClient implements Client {
     })
   }
 
-  call(action: ActionObjectInformationV1): Promise<string> {
-    return new Promise((resolve, reject) => {
-      if (this.loggedin === true) {
-        if (action.actionType === ActionTypeV1.GET) {
-          let trans = this.protocol.readTrans()
+  async call(action: ActionObjectInformationV1): Promise<string> {
+    let transCmd = undefined
+    let type: transType = transType.GET // default to GET
+
+    if (this.loggedin === true) {
+      if (action.actionType === ActionTypeV1.GET) {
+        transCmd = this.protocol.transaction(transType.GET)
+      } else if (action.actionType === ActionTypeV1.SET) {
+        transCmd = this.protocol.transaction(transType.SET)
+        type = transType.SET
+      } else {
+        throw new Error('Not a valid action type')
+      }
+
+      let transResponse = await this.axiosSession.post(this.uri, transCmd)
+      this.protocol.setTrans(transResponse.data)
+      let path: string[] | undefined = action.path
+      if (path !== undefined) {
+        this.protocol.setPath(path)
+      } else {
+        throw new Error('GET/SET commands need a path')
+      }
+
+      if (type === transType.GET) {
+        let schemaCmd = this.protocol.getSchema()
+        return new Promise<string>((resolve, reject) => {
           this.axiosSession
-            .post(this.uri, trans)
-            .then(response => {
-              this.protocol.setTrans(response.data)
-              this.protocol.setPath(action.path || [])
-              let cmd = this.protocol.getCommand('getSchema')
-              this.axiosSession
-                .post(this.uri, cmd)
-                .then(actionResponse => {
-                  let actionResponseStr = JSON.stringify(actionResponse.data)
-                  resolve(actionResponseStr)
-                })
-                .catch(error => {
-                  /* istanbul ignore next */
-                  reject(error)
-                })
+            .post(this.uri, schemaCmd)
+            .then(actionResponse => {
+              let actionResponseStr = JSON.stringify(actionResponse.data)
+              resolve(actionResponseStr)
             })
             .catch(error => {
               /* istanbul ignore next */
-              reject('ERROR::' + error)
+              reject(error)
             })
-        } else {
-          reject('Not a valid action type')
-        }
+        })
       } else {
-        let er = "Not logged in, can't do action"
-        reject(er)
+        // Else this is a set command...
+        let setCmd = this.protocol.setValues(action.modifyingValue)
+        let validateCmd = this.protocol.validateCommit()
+        let commitCmd = this.protocol.commit()
+        let setResponse = await this.axiosSession.post(this.uri, setCmd)
+        console.log('Set response: ' + JSON.stringify(setResponse.data))
+        let validResponse = await this.axiosSession.post(this.uri, validateCmd)
+        console.log('Validate commit response: ' + JSON.stringify(validResponse.data))
+        return new Promise<string>((resolve, reject) => {
+          this.axiosSession
+            .post(this.uri, commitCmd)
+            .then(commitResponse => {
+              let actionResponseStr = JSON.stringify(commitResponse.data)
+              resolve(actionResponseStr)
+            })
+            .catch(error => {
+              /* istanbul ignore next */
+              reject(error)
+            })
+        })
       }
-    })
+    } else {
+      throw new Error("Not logged in, can't do action")
+    }
   }
 
   // For testing purposes ONLY

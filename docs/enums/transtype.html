@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>@ge-fnm/perform-action-module | @ge-fnm/perform-action-module</title>
+	<title>transType | @ge-fnm/perform-action-module</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<style type="text/css">/*! normalize.css v1.1.3 | MIT License | git.io/normalize */
@@ -2335,7 +2335,7 @@ img {
 		<div class="container">
 			<div class="table-wrap">
 				<div class="table-cell">
-					<strong><a href="index.html">@ge-fnm/perform-action-module</a></strong>
+					<strong><a href="../index.html">@ge-fnm/perform-action-module</a></strong>
 				</div>
 				<div class="table-cell" id="tsd-widgets">
 					<div id="tsd-filter">
@@ -2366,269 +2366,91 @@ img {
 <nav class="tsd-navigation secondary">
 	<ul>
 		<li class=" tsd-kind-enum">
-			<a href="enums/clienttype.html" class="tsd-kind-icon">Client<wbr>Type</a>
+			<a href="clienttype.html" class="tsd-kind-icon">Client<wbr>Type</a>
 		</li>
 		<li class=" tsd-kind-enum">
-			<a href="enums/protocoltype.html" class="tsd-kind-icon">Protocol<wbr>Type</a>
+			<a href="protocoltype.html" class="tsd-kind-icon">Protocol<wbr>Type</a>
 		</li>
-		<li class=" tsd-kind-enum">
-			<a href="enums/transtype.html" class="tsd-kind-icon">trans<wbr>Type</a>
+		<li class="current tsd-kind-enum">
+			<a href="transtype.html" class="tsd-kind-icon">trans<wbr>Type</a>
+			<ul>
+				<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
+					<a href="transtype.html#get" class="tsd-kind-icon">GET</a>
+				</li>
+				<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
+					<a href="transtype.html#set" class="tsd-kind-icon">SET</a>
+				</li>
+			</ul>
 		</li>
 		<li class=" tsd-kind-class">
-			<a href="classes/executer.html" class="tsd-kind-icon">Executer</a>
+			<a href="../classes/executer.html" class="tsd-kind-icon">Executer</a>
 		</li>
 		<li class=" tsd-kind-class">
-			<a href="classes/httpclient.html" class="tsd-kind-icon">Http<wbr>Client</a>
+			<a href="../classes/httpclient.html" class="tsd-kind-icon">Http<wbr>Client</a>
 		</li>
 		<li class=" tsd-kind-class">
-			<a href="classes/jsonrpc.html" class="tsd-kind-icon">Jsonrpc</a>
+			<a href="../classes/jsonrpc.html" class="tsd-kind-icon">Jsonrpc</a>
 		</li>
 		<li class=" tsd-kind-interface">
-			<a href="interfaces/client.html" class="tsd-kind-icon">Client</a>
+			<a href="../interfaces/client.html" class="tsd-kind-icon">Client</a>
 		</li>
 		<li class=" tsd-kind-interface">
-			<a href="interfaces/httpprotocol.html" class="tsd-kind-icon">Http<wbr>Protocol</a>
+			<a href="../interfaces/httpprotocol.html" class="tsd-kind-icon">Http<wbr>Protocol</a>
 		</li>
 		<li class=" tsd-kind-interface">
-			<a href="interfaces/protocol.html" class="tsd-kind-icon">Protocol</a>
+			<a href="../interfaces/protocol.html" class="tsd-kind-icon">Protocol</a>
 		</li>
 		<li class=" tsd-kind-type-alias">
-			<a href="globals.html#command" class="tsd-kind-icon">command</a>
+			<a href="../globals.html#command" class="tsd-kind-icon">command</a>
 		</li>
 		<li class=" tsd-kind-type-alias">
-			<a href="globals.html#parameters" class="tsd-kind-icon">parameters</a>
+			<a href="../globals.html#parameters" class="tsd-kind-icon">parameters</a>
 		</li>
 		<li class=" tsd-kind-type-alias">
-			<a href="globals.html#result" class="tsd-kind-icon">result</a>
+			<a href="../globals.html#result" class="tsd-kind-icon">result</a>
 		</li>
 		<li class=" tsd-kind-type-alias">
-			<a href="globals.html#transactionresponse" class="tsd-kind-icon">transaction<wbr>Response</a>
+			<a href="../globals.html#transactionresponse" class="tsd-kind-icon">transaction<wbr>Response</a>
 		</li>
 	</ul>
 </nav>
 <div class="container container-main">
 	<div class="content-wrap">
-		<div class="tsd-panel tsd-typography">
-			<a href="#perform-action-module" id="perform-action-module" style="color: inherit; text-decoration: none;">
-				<h1>perform-action-module</h1>
-			</a>
-			<p>This is the Perform Action Module used in the General Electric Field Network Manager</p>
-			<p><a href="https://coveralls.io/github/GE-MDS-FNM-V2/action-object?branch=master"><img src="https://coveralls.io/repos/github/GE-MDS-FNM-V2/action-object/badge.svg?branch=master" alt="Coverage Status"></a></p>
-			<p>This module works directly with the communication-selector-module and the action-object module
-			This module requires a GE radio to work</p>
-			<a href="#i-would-like-to-use-the-library-in-my-application" id="i-would-like-to-use-the-library-in-my-application" style="color: inherit; text-decoration: none;">
-				<h2>I would like to use the library in my application</h2>
-			</a>
-			<p>To install this module in your project, use one of the following commands</p>
-			<a href="#install-with-yarn" id="install-with-yarn" style="color: inherit; text-decoration: none;">
-				<h2>Install with yarn</h2>
-			</a>
-			<pre><code>yarn <span class="hljs-keyword">add</span> @ge-fnm/<span class="hljs-keyword">perform</span>-action-module</code></pre>
-			<a href="#install-with-npm" id="install-with-npm" style="color: inherit; text-decoration: none;">
-				<h2>Install with npm</h2>
-			</a>
-			<pre><code>npm install @ge-fnm/<span class="hljs-keyword">perform</span>-action-module</code></pre>
-			<a href="#example-usage" id="example-usage" style="color: inherit; text-decoration: none;">
-				<h2>Example Usage</h2>
-			</a>
-			<a href="#usage-in-node" id="usage-in-node" style="color: inherit; text-decoration: none;">
-				<h3>Usage in Node</h3>
-			</a>
-			<pre><code><span class="hljs-keyword">import</span> { Executer } <span class="hljs-keyword">from</span> <span class="hljs-string">'./perform-action-module'</span>
-<span class="hljs-comment">// See @gefnm/action-object for more information on below</span>
-<span class="hljs-keyword">import</span> {
-  v1,
-  ActionTypeV1,
-  CommunicationMethodV1,
-  ProtocolV1
-} <span class="hljs-keyword">from</span> <span class="hljs-string">'@ge-fnm/action-object'</span>}
-
-<span class="hljs-keyword">const</span> executer = <span class="hljs-keyword">new</span> Executer()
-<span class="hljs-keyword">const</span> URL = <span class="hljs-string">'0.0.0.0'</span>
-
-<span class="hljs-comment">// Add client</span>
-<span class="hljs-keyword">let</span> action = v1.create({
-    <span class="hljs-attr">version</span>: <span class="hljs-number">1</span>,
-    <span class="hljs-attr">actionType</span>: ActionTypeV1.INIT,
-    <span class="hljs-attr">commData</span>: {
-    <span class="hljs-attr">commMethod</span>: CommunicationMethodV1.HTTP,
-    <span class="hljs-attr">protocol</span>: ProtocolV1.JSONRPC,
-    <span class="hljs-attr">username</span>: <span class="hljs-string">'username'</span>,
-    <span class="hljs-attr">password</span>: <span class="hljs-string">'password'</span>
-    },
-    <span class="hljs-attr">modifyingValue</span>: <span class="hljs-string">''</span>,
-    <span class="hljs-attr">path</span>: [],
-    <span class="hljs-attr">response</span>: <span class="hljs-literal">undefined</span>,
-    <span class="hljs-attr">uri</span>: URL
-})
-<span class="hljs-keyword">let</span> serilizedClient = action.serialize()
-
-executer.execute(serilizedClient)
-.then(<span class="hljs-function"><span class="hljs-params">response</span> =&gt;</span> {
-    <span class="hljs-comment">// Execute command</span>
-    <span class="hljs-keyword">let</span> action = v1.create({
-        <span class="hljs-attr">version</span>: <span class="hljs-number">1</span>,
-        <span class="hljs-attr">actionType</span>: ActionTypeV1.GET,
-        <span class="hljs-attr">commData</span>: {
-        <span class="hljs-attr">commMethod</span>: CommunicationMethodV1.HTTP,
-        <span class="hljs-attr">protocol</span>: ProtocolV1.JSONRPC
-        },
-        <span class="hljs-attr">modifyingValue</span>: <span class="hljs-string">''</span>,
-        <span class="hljs-attr">path</span>: [<span class="hljs-string">'/serv:services/snmp:snmp/agent/enabled'</span>],
-        <span class="hljs-attr">response</span>: <span class="hljs-literal">undefined</span>,
-        <span class="hljs-attr">uri</span>: <span class="hljs-number">0.0</span><span class="hljs-number">.0</span><span class="hljs-number">.0</span>
-    })
-    <span class="hljs-keyword">let</span> serilizedAction = action.serialize()
-    executer.execute(serilizedAction)
-    .then(<span class="hljs-function"><span class="hljs-params">response2</span> =&gt;</span> {
-        <span class="hljs-comment">// response2 is an action object with response field filled out</span>
-    })
-    .catch(<span class="hljs-function"><span class="hljs-params">error2</span> =&gt;</span> {
-        <span class="hljs-comment">// handle action error</span>
-    })
-})
-.catch(<span class="hljs-function"><span class="hljs-params">error</span> =&gt;</span> {
-    <span class="hljs-comment">// handle unsuccessful client addition</span>
-})</code></pre>
-		</div>
-		<div style="position:relative;"><a name="typedoc-main-index" class="tsd-anchor"></a></div>
 		<section class="tsd-panel-group tsd-index-group">
 			<h2>Index</h2>
 			<section class="tsd-panel tsd-index-panel">
 				<div class="tsd-index-content">
 					<section class="tsd-index-section ">
-						<h3>Enumerations</h3>
+						<h3>Enumeration members</h3>
 						<ul class="tsd-index-list">
-							<li class="tsd-kind-enum"><a href="enums/clienttype.html" class="tsd-kind-icon">Client<wbr>Type</a></li>
-							<li class="tsd-kind-enum"><a href="enums/protocoltype.html" class="tsd-kind-icon">Protocol<wbr>Type</a></li>
-							<li class="tsd-kind-enum"><a href="enums/transtype.html" class="tsd-kind-icon">trans<wbr>Type</a></li>
-						</ul>
-					</section>
-					<section class="tsd-index-section ">
-						<h3>Classes</h3>
-						<ul class="tsd-index-list">
-							<li class="tsd-kind-class"><a href="classes/executer.html" class="tsd-kind-icon">Executer</a></li>
-							<li class="tsd-kind-class"><a href="classes/httpclient.html" class="tsd-kind-icon">Http<wbr>Client</a></li>
-							<li class="tsd-kind-class"><a href="classes/jsonrpc.html" class="tsd-kind-icon">Jsonrpc</a></li>
-						</ul>
-					</section>
-					<section class="tsd-index-section ">
-						<h3>Interfaces</h3>
-						<ul class="tsd-index-list">
-							<li class="tsd-kind-interface"><a href="interfaces/client.html" class="tsd-kind-icon">Client</a></li>
-							<li class="tsd-kind-interface"><a href="interfaces/httpprotocol.html" class="tsd-kind-icon">Http<wbr>Protocol</a></li>
-							<li class="tsd-kind-interface"><a href="interfaces/protocol.html" class="tsd-kind-icon">Protocol</a></li>
-						</ul>
-					</section>
-					<section class="tsd-index-section ">
-						<h3>Type aliases</h3>
-						<ul class="tsd-index-list">
-							<li class="tsd-kind-type-alias"><a href="globals.html#command" class="tsd-kind-icon">command</a></li>
-							<li class="tsd-kind-type-alias"><a href="globals.html#parameters" class="tsd-kind-icon">parameters</a></li>
-							<li class="tsd-kind-type-alias"><a href="globals.html#result" class="tsd-kind-icon">result</a></li>
-							<li class="tsd-kind-type-alias"><a href="globals.html#transactionresponse" class="tsd-kind-icon">transaction<wbr>Response</a></li>
+							<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="transtype.html#get" class="tsd-kind-icon">GET</a></li>
+							<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="transtype.html#set" class="tsd-kind-icon">SET</a></li>
 						</ul>
 					</section>
 				</div>
 			</section>
 		</section>
 		<section class="tsd-panel-group tsd-member-group ">
-			<h2>Type aliases</h2>
-			<section class="tsd-panel tsd-member tsd-kind-type-alias">
-				<a name="command" class="tsd-anchor"></a>
-				<h3>command</h3>
-				<div class="tsd-signature tsd-kind-icon">command<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>jsonrpc<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>method<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>params<span class="tsd-signature-symbol">?: </span><a href="globals.html#parameters" class="tsd-signature-type">parameters</a><span class="tsd-signature-symbol"> }</span></div>
+			<h2>Enumeration members</h2>
+			<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
+				<a name="get" class="tsd-anchor"></a>
+				<h3>GET</h3>
+				<div class="tsd-signature tsd-kind-icon">GET<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> = &quot;read&quot;</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/GE-MDS-FNM-V2/perform-action-module/blob/605d2f3/src/protocols/jsonrpc.ts#L140">protocols/jsonrpc.ts:140</a></li>
+						<li>Defined in <a href="https://github.com/GE-MDS-FNM-V2/perform-action-module/blob/605d2f3/src/enums/enums.ts#L13">enums/enums.ts:13</a></li>
 					</ul>
 				</aside>
-				<div class="tsd-type-declaration">
-					<h4>Type declaration</h4>
-					<ul class="tsd-parameters">
-						<li class="tsd-parameter">
-							<h5>id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
-						</li>
-						<li class="tsd-parameter">
-							<h5>jsonrpc<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
-						</li>
-						<li class="tsd-parameter">
-							<h5>method<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
-						</li>
-						<li class="tsd-parameter">
-							<h5><span class="tsd-flag ts-flagOptional">Optional</span> params<span class="tsd-signature-symbol">?: </span><a href="globals.html#parameters" class="tsd-signature-type">parameters</a></h5>
-						</li>
-					</ul>
-				</div>
 			</section>
-			<section class="tsd-panel tsd-member tsd-kind-type-alias">
-				<a name="parameters" class="tsd-anchor"></a>
-				<h3>parameters</h3>
-				<div class="tsd-signature tsd-kind-icon">parameters<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>mode<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>passwd<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>tag<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>user<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> }</span></div>
+			<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
+				<a name="set" class="tsd-anchor"></a>
+				<h3>SET</h3>
+				<div class="tsd-signature tsd-kind-icon">SET<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> = &quot;read_write&quot;</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/GE-MDS-FNM-V2/perform-action-module/blob/605d2f3/src/protocols/jsonrpc.ts#L147">protocols/jsonrpc.ts:147</a></li>
+						<li>Defined in <a href="https://github.com/GE-MDS-FNM-V2/perform-action-module/blob/605d2f3/src/enums/enums.ts#L14">enums/enums.ts:14</a></li>
 					</ul>
 				</aside>
-				<div class="tsd-type-declaration">
-					<h4>Type declaration</h4>
-					<ul class="tsd-parameters">
-						<li class="tsd-parameter">
-							<h5><span class="tsd-flag ts-flagOptional">Optional</span> mode<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span></h5>
-						</li>
-						<li class="tsd-parameter">
-							<h5><span class="tsd-flag ts-flagOptional">Optional</span> passwd<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span></h5>
-						</li>
-						<li class="tsd-parameter">
-							<h5><span class="tsd-flag ts-flagOptional">Optional</span> tag<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span></h5>
-						</li>
-						<li class="tsd-parameter">
-							<h5><span class="tsd-flag ts-flagOptional">Optional</span> user<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span></h5>
-						</li>
-					</ul>
-				</div>
-			</section>
-			<section class="tsd-panel tsd-member tsd-kind-type-alias">
-				<a name="result" class="tsd-anchor"></a>
-				<h3>result</h3>
-				<div class="tsd-signature tsd-kind-icon">result<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>th<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> }</span></div>
-				<aside class="tsd-sources">
-					<ul>
-						<li>Defined in <a href="https://github.com/GE-MDS-FNM-V2/perform-action-module/blob/605d2f3/src/protocols/jsonrpc.ts#L136">protocols/jsonrpc.ts:136</a></li>
-					</ul>
-				</aside>
-				<div class="tsd-type-declaration">
-					<h4>Type declaration</h4>
-					<ul class="tsd-parameters">
-						<li class="tsd-parameter">
-							<h5>th<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
-						</li>
-					</ul>
-				</div>
-			</section>
-			<section class="tsd-panel tsd-member tsd-kind-type-alias">
-				<a name="transactionresponse" class="tsd-anchor"></a>
-				<h3>transaction<wbr>Response</h3>
-				<div class="tsd-signature tsd-kind-icon">transaction<wbr>Response<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>jsonrpc<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>result<span class="tsd-signature-symbol">: </span><a href="globals.html#transactionresponse.__type.result" class="tsd-signature-type">result</a><span class="tsd-signature-symbol"> }</span></div>
-				<aside class="tsd-sources">
-					<ul>
-						<li>Defined in <a href="https://github.com/GE-MDS-FNM-V2/perform-action-module/blob/605d2f3/src/protocols/jsonrpc.ts#L130">protocols/jsonrpc.ts:130</a></li>
-					</ul>
-				</aside>
-				<div class="tsd-type-declaration">
-					<h4>Type declaration</h4>
-					<ul class="tsd-parameters">
-						<li class="tsd-parameter">
-							<h5>id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
-						</li>
-						<li class="tsd-parameter">
-							<h5>jsonrpc<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
-						</li>
-						<li class="tsd-parameter">
-							<h5>result<span class="tsd-signature-symbol">: </span><a href="globals.html#transactionresponse.__type.result" class="tsd-signature-type">result</a></h5>
-						</li>
-					</ul>
-				</div>
 			</section>
 		</section>
 		<footer class="with-border-bottom">
