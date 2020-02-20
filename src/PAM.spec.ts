@@ -212,7 +212,6 @@ describe('Perform Action Module', () => {
       })
   })
 
-  // httpClient
   it('Can properly log into a radio', async () => {
     let client = new HttpClient('98.10.43.107', ProtocolType.JSONRPC, 'admin', 'd0NotCommit')
     await client
