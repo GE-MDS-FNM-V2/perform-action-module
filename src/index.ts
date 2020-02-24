@@ -37,14 +37,20 @@ export class Executer {
         )
           .then(addClientresponse => {
             // Either Login failed, or login succeeded, or no need to login
-            actionObj.information.response.data = addClientresponse
+            actionObj.information.response = {
+              data: addClientresponse,
+              error: null
+            }
             resolve(actionObj.serialize())
           })
           .catch(addClientError => {
             // Either Axios error (connection refused), or Protocol is invalid
             /* istanbul ignore next */
             addClientError = addClientError.toString()
-            actionObj.information.response.error = `Error while adding client with uri ${key}. ${addClientError}`
+            actionObj.information.response = {
+              error: `Error while adding client with uri ${key}. ${addClientError}`,
+              data: null
+            }
             reject(actionObj.serialize())
           })
       } else {
@@ -54,18 +60,26 @@ export class Executer {
             .call(actionObj.information)
             .then(getSetResponse => {
               // Action succeeded
-              actionObj.information.response.data = getSetResponse
+              actionObj.information.response = {
+                data: getSetResponse,
+                error: null
+              }
               resolve(actionObj.serialize())
             })
             .catch(getSetError => {
               // Axios error (connection refused), invalid action type, Not logged in
               /* istanbul ignore next */
-              actionObj.information.response.error = getSetError.toString()
+              actionObj.information.response = {
+                error: getSetError.toString(),
+                data: null
+              }
               reject(actionObj.serialize())
             })
         } else {
-          actionObj.information.response.error =
-            'Not a valid radio uri. Please initialize radio before sending commands'
+          actionObj.information.response = {
+            error: 'Not a valid radio uri. Please initialize radio before sending commands',
+            data: null
+          }
           reject(actionObj.serialize())
         }
       }
