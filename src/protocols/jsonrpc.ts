@@ -109,6 +109,7 @@ export class Jsonrpc implements HttpProtocol {
   }
 
   setPath = (path: string[]) => {
+    this.path = ''
     for (let i = 0; i < path.length; i++) {
       this.path = this.path + '/' + path[i]
     }
