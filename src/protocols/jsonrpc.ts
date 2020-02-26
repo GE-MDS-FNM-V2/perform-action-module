@@ -32,8 +32,7 @@ export class Jsonrpc implements HttpProtocol {
       th: this.th,
       path: this.path,
       evaluate_when_entries: true,
-      insert_values: true,
-      levels: 3
+      insert_values: true
     }
     return this.cmd('get_schema', params)
   }

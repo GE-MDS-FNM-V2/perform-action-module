@@ -34,8 +34,7 @@ describe('JSON RPC Logic', () => {
         th: 1,
         path: '/serv:services/snmp:snmp/agent/enabled',
         evaluate_when_entries: true,
-        insert_values: true,
-        levels: 3
+        insert_values: true
       }
     }
     expect(cmd).toMatchObject(expected)
