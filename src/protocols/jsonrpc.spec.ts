@@ -98,4 +98,14 @@ describe('JSON RPC Logic', () => {
     }
     expect(cmd).toMatchObject(expected)
   })
+
+  it('Can parse a path correctly2', () => {
+    let jsonrpc = new Jsonrpc('admin', 'admin')
+    let path = ['serv:services', 'snmp:snmp', 'agent', 'enabled']
+    let pathstr = '/serv:services/snmp:snmp/agent/enabled'
+    jsonrpc.setPath(path)
+    jsonrpc.setPath(path)
+    console.log(jsonrpc.getPath())
+    strictEqual(jsonrpc.getPath(), pathstr)
+  })
 })
