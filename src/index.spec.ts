@@ -7,8 +7,10 @@ import {
   ProtocolV1,
   ActionObjectInformationV1
 } from '@ge-fnm/action-object'
-import { strictEqual } from 'assert'
+import { promises as fsPromises } from 'fs'
 // import { isBrowser, isNode } from 'browser-or-node'
+
+jest.setTimeout(30000)
 
 describe('Perform Action Module', () => {
   // perform-action-module
@@ -56,6 +58,98 @@ describe('Perform Action Module', () => {
           .catch(error => {
             fail(error)
           })
+      })
+  })
+
+  it('Can call two GET commands', async () => {
+    let executer = new Executer()
+    let URL = '98.10.43.107'
+    await fsPromises.mkdir(__dirname + '/../test/log/can_call_two_GET_commands/', {
+      recursive: true
+    })
+    let init = v1.create({
+      version: 1,
+      actionType: ActionTypeV1.INIT,
+      commData: {
+        commMethod: CommunicationMethodV1.HTTP,
+        protocol: ProtocolV1.JSONRPC,
+        username: 'admin',
+        password: 'd0NotCommit'
+      },
+      modifyingValue: '',
+      path: [],
+      response: {
+        error: null,
+        data: null
+      },
+      uri: URL
+    })
+    let initstr = init.serialize()
+    await executer.execute(initstr)
+    let action = v1.create({
+      version: 1,
+      actionType: ActionTypeV1.GET,
+      commData: {
+        commMethod: CommunicationMethodV1.HTTP,
+        protocol: ProtocolV1.JSONRPC
+      },
+      modifyingValue: '',
+      path: ['/if:interfaces/'],
+      response: {
+        error: null,
+        data: null
+      },
+      uri: URL
+    })
+    let serilizedAction = action.serialize()
+    await executer
+      .execute(serilizedAction)
+      .then(async response => {
+        let actionobj = v1.deserialize(response)
+        if (actionobj.information.response !== undefined) {
+          await fsPromises.writeFile(
+            __dirname + '/../test/log/can_call_two_GET_commands/output1.txt',
+            actionobj.information.response.data
+          )
+        } else {
+          fail('No response data')
+        }
+      })
+      .catch(error => {
+        fail(error)
+      })
+
+    let action2 = v1.create({
+      version: 1,
+      actionType: ActionTypeV1.GET,
+      commData: {
+        commMethod: CommunicationMethodV1.HTTP,
+        protocol: ProtocolV1.JSONRPC
+      },
+      modifyingValue: '',
+      path: ['/serv:services/'],
+      response: {
+        error: null,
+        data: null
+      },
+      uri: URL
+    })
+    let serilizedAction2 = action2.serialize()
+    await executer
+      .execute(serilizedAction2)
+      .then(async response => {
+        let actionobj = v1.deserialize(response)
+        if (actionobj.information.response !== undefined) {
+          await fsPromises.writeFile(
+            __dirname + '/../test/log/can_call_two_GET_commands/output2.txt',
+            actionobj.information.response.data
+          )
+        } else {
+          fail('No response data')
+        }
+      })
+      .catch(error => {
+        fail(error)
       })
   })
 
