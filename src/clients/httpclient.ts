@@ -126,7 +126,7 @@ export class HttpClient implements Client {
           this.axiosSession
             .post(this.uri, schemaCmd)
             .then(actionResponse => {
-              //pamLog('HTTPCLIENT:: Received the following transaction response: %s', transResponse)
+              // pamLog('HTTPCLIENT:: Received the following transaction response: %s', transResponse)
               let actionResponseStr = JSON.stringify(actionResponse.data)
               resolve(actionResponseStr)
             })
