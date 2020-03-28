@@ -92,7 +92,8 @@ export class Executer {
             .call(actionObj.information)
             .then(getSetResponse => {
               // Action succeeded
-              pamLog('Executer:: Received response from the radio: %s', getSetResponse)
+              // Commented out due to excesively large response with getSchema
+              // pamLog('Executer:: Received response from the radio: %s', getSetResponse)
               actionObj.information.response = {
                 data: getSetResponse,
                 error: null
