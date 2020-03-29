@@ -5,7 +5,7 @@ import { v1, ActionTypeV1, ActionObjectInformationV1 } from '@ge-fnm/action-obje
 import { TSMap } from 'typescript-map'
 import { debug } from 'debug'
 
-export const pamLog = debug('ge-fnm:perform-action-module')
+export const pamLog = debug('ge-fnm:perform-action-module:executer')
 
 export class Executer {
   // Initated client objects are held in the MAP. URI is key
@@ -28,7 +28,7 @@ export class Executer {
     password?: string
   ): Promise<string> {
     pamLog(
-      'Executer:: Adding client with uri: %s type: %s protocol: %s username: %s password: %s',
+      'Adding client with uri: %s type: %s protocol: %s username: %s password: %s',
       uri,
       type,
       protocol,
@@ -49,13 +49,13 @@ export class Executer {
    * @param action serialized action object
    */
   execute(action: string): Promise<string> {
-    pamLog('Executer:: Executing serialized action object:\n%s', action)
+    pamLog('Executing serialized action object:\n%s', action)
     return new Promise((resolve, reject) => {
       let actionObj = v1.deserialize(action)
       let actionData = actionObj.information
       let key: string = actionData.uri
-      pamLog('Executer:: Action Type: %s', actionObj.information.actionType)
-      pamLog('Executer:: Client URI: %s', key)
+      pamLog('Action Type: %s', actionObj.information.actionType)
+      pamLog('Client URI: %s', key)
       if (actionObj.information.actionType === ActionTypeV1.INIT) {
         this.addclient(
           key,
@@ -86,14 +86,14 @@ export class Executer {
           })
       } else {
         if (this.clientObjs.has(key)) {
-          pamLog('Executer:: Found initiated client with uri: %s', key)
+          pamLog('Found initiated client with uri: %s', key)
           this.clientObjs
             .get(key)
             .call(actionObj.information)
             .then(getSetResponse => {
               // Action succeeded
               // Commented out due to excesively large response with getSchema
-              // pamLog('Executer:: Received response from the radio: %s', getSetResponse)
+              // pamLog('Received response from the radio: %s', getSetResponse)
               actionObj.information.response = {
                 data: getSetResponse,
                 error: null
@@ -102,7 +102,7 @@ export class Executer {
             })
             .catch(getSetError => {
               // Axios error (connection refused), invalid action type, Not logged in
-              pamLog('Executer:: Received the following ERROR: %s', getSetError)
+              pamLog('Received the following ERROR: %s', getSetError)
               /* istanbul ignore next */
               actionObj.information.response = {
                 error: getSetError.toString(),
@@ -111,7 +111,7 @@ export class Executer {
               reject(actionObj.serialize())
             })
         } else {
-          pamLog('Executer:: No initiated client found with uri: %s', key)
+          pamLog('No initiated client found with uri: %s', key)
           actionObj.information.response = {
             error: 'Not a valid radio uri. Please initialize radio before sending commands',
             data: null
@@ -128,25 +128,25 @@ export class Executer {
    * @param uri the serial port or ip address of the client
    */
   killClientSession(uri: string): Promise<boolean> {
-    pamLog('Executer:: Killing session for client with uri: %s', uri)
+    pamLog('Killing session for client with uri: %s', uri)
     return new Promise((resolve, rejects) => {
       if (this.clientObjs.has(uri)) {
-        pamLog('Executer:: Found initiated client with uri: %s', uri)
+        pamLog('Found initiated client with uri: %s', uri)
         this.clientObjs
           .get(uri)
           .killsession()
           .then(response => {
-            pamLog('Executer:: Kill session radio response: %s', response)
+            pamLog('Kill session radio response: %s', response)
             resolve(response)
           })
           .catch(error => {
             /* istanbul ignore next */
-            pamLog('Executer:: ERROR killing session: %s', error)
+            pamLog('ERROR killing session: %s', error)
             /* istanbul ignore next */
             rejects(error)
           })
       }
-      pamLog('Executer:: No initiated client found with uri: %s', uri)
+      pamLog('No initiated client found with uri: %s', uri)
       rejects('No client session')
     })
   }
