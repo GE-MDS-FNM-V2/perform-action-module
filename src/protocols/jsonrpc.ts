@@ -1,6 +1,9 @@
 import { HttpProtocol } from './httpProtocol'
 import { AxiosRequestConfig } from 'axios'
 import { transType } from '../enums/enums'
+import debug from 'debug'
+
+const pamLog = debug('ge-fnm:perform-action-module:jsonrpc')
 
 export class Jsonrpc implements HttpProtocol {
   private th: number | undefined
@@ -10,6 +13,7 @@ export class Jsonrpc implements HttpProtocol {
   private password?: string
 
   constructor(username?: string | undefined, password?: string | undefined) {
+    pamLog('Creating jsonrpc protocol username: %s, password: %s', username, password)
     this.username = username
     this.password = password
     this.cmdID = 0
@@ -23,7 +27,7 @@ export class Jsonrpc implements HttpProtocol {
       method: method,
       params: params
     }
-
+    pamLog('Created command: \n%O', cmd)
     return cmd
   }
 
@@ -78,6 +82,7 @@ export class Jsonrpc implements HttpProtocol {
       withCredentials: true,
       responseType: 'json'
     }
+    pamLog('Config: %O', config)
     return config
   }
 
@@ -112,6 +117,7 @@ export class Jsonrpc implements HttpProtocol {
     for (let i = 0; i < path.length; i++) {
       this.path = this.path + '/' + path[i]
     }
+    pamLog('Set path to: %s', this.path)
   }
 
   setValues = (values: any[] | any) => {

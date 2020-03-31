@@ -22,7 +22,37 @@ yarn add @ge-fnm/perform-action-module
 npm install @ge-fnm/perform-action-module
 ```
 
-## Example Usage
+## Debugging
+
+### MacOS/Linux
+```
+DEBUG='ge-fnm:perform-action-module' yarn #to enable logging for only the perform-action-module
+-or-
+DEBUG='ge-fnm:perform-action-module:executer' yarn #to enable logging for only the perform-action-module executer
+-or-
+DEBUG='ge-fnm:perform-action-module:httpclient' yarn #to enable logging for only the perform-action-module httpclient
+-or-
+DEBUG='ge-fnm:perform-action-module:jsonrpc' yarn #to enable logging for only the perform-action-module jsonrpc protocol
+-or-
+DEBUG='ge-fnm:* yarn # for all logging related to ge-fnm
+-or-
+DEBUG=* yarn # enable logging for all installed node_modules that look for the env var DEBUG - please note, this is a lot. You probably dont want this
+```
+
+### Powershell (Windows)
+```
+$Env:DEBUG='ge-fnm:perform-action-module' yarn #to enable logging for only the perform-action-module
+-or-
+$Env:DEBUG='ge-fnm:perform-action-module:executer' yarn #to enable logging for only the perform-action-module executer
+-or-
+$Env:DEBUG='ge-fnm:perform-action-module:httpclient' yarn #to enable logging for only the perform-action-module httpclient
+-or-
+$Env:DEBUG='ge-fnm:perform-action-module:jsonrpc' yarn #to enable logging for only the perform-action-module jsonrpc protocol
+-or-
+$Env:DEBUG='ge-fnm:* yarn # for all logging related to ge-fnm
+-or-
+$Env:DEBUG=* yarn # enable logging for all installed node_modules that look for the env var DEBUG - please note, this is a lot. You probably dont want this
+```
 
 ### Usage in Node
 ```
@@ -39,36 +69,42 @@ const executer = new Executer()
 const URL = '0.0.0.0'
 
 // Add client
-let action = v1.create({
-    version: 1,
-    actionType: ActionTypeV1.INIT,
-    commData: {
-    commMethod: CommunicationMethodV1.HTTP,
-    protocol: ProtocolV1.JSONRPC,
-    username: 'username',
-    password: 'password'
-    },
-    modifyingValue: '',
-    path: [],
-    response: undefined,
-    uri: URL
-})
+let init = v1.create({
+      version: 1,
+      actionType: ActionTypeV1.INIT,
+      commData: {
+        commMethod: CommunicationMethodV1.HTTP,
+        protocol: ProtocolV1.JSONRPC,
+        username: 'myusername',
+        password: 'mypassword'
+      },
+      modifyingValue: '',
+      path: [],
+      response: {
+        error: null,
+        data: null
+      },
+      uri: URL
+    })
 let serilizedClient = action.serialize()
 
 executer.execute(serilizedClient)
 .then(response => {
     // Execute command
     let action = v1.create({
-        version: 1,
-        actionType: ActionTypeV1.GET,
-        commData: {
+      version: 1,
+      actionType: ActionTypeV1.GET,
+      commData: {
         commMethod: CommunicationMethodV1.HTTP,
         protocol: ProtocolV1.JSONRPC
-        },
-        modifyingValue: '',
-        path: ['/serv:services/snmp:snmp/agent/enabled'],
-        response: undefined,
-        uri: 0.0.0.0
+      },
+      modifyingValue: '',
+      path: ['/if:interfaces/'],
+      response: {
+        error: null,
+        data: null
+      },
+      uri: URL
     })
     let serilizedAction = action.serialize()
     executer.execute(serilizedAction)
