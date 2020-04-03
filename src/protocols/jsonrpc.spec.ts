@@ -1,6 +1,7 @@
 import { Jsonrpc, transactionResponse } from './jsonrpc'
 import { strictEqual } from 'assert'
 import { transType } from '../enums/enums'
+import { AxiosResponse } from 'axios'
 
 describe('JSON RPC Logic', () => {
   it('Can add a transaction token to JSONRPC', () => {
@@ -107,5 +108,29 @@ describe('JSON RPC Logic', () => {
     jsonrpc.setPath(path)
     console.log(jsonrpc.getPath())
     strictEqual(jsonrpc.getPath(), pathstr)
+  })
+
+  it('Can correctly detect an error in a JSONRPC Response', () => {
+    let jsonrpc = new Jsonrpc('admin', 'admin')
+    let resData = {
+      jsonrpc: '2.0',
+      id: 1,
+      error: {
+        code: -32602,
+        type: 'rpc.method.unexpected_params',
+        message: 'Unexpected params',
+        data: {
+          param: 'foo'
+        }
+      }
+    }
+    let axiosResponse: AxiosResponse = {
+      data: resData,
+      status: 200,
+      statusText: '',
+      headers: '',
+      config: {}
+    }
+    expect(jsonrpc.handleResponseError(axiosResponse)).toEqual(true)
   })
 })

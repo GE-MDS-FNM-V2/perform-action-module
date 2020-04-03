@@ -5,8 +5,9 @@ import { transType } from '../enums/enums'
 import { ActionTypeV1, ActionObjectInformationV1, GEErrors } from '@ge-fnm/action-object'
 import { HttpProtocol } from '../protocols/httpProtocol'
 import { debug } from 'debug'
-import { GEPAMError, GEPAMErrorCodes, GECSMError } from '@ge-fnm/action-object/dist/types/GEError'
 
+const GEPAMError = GEErrors.GEPAMError
+const GEPAMErrorCodes = GEErrors.GEPAMErrorCodes
 const pamLog = debug('ge-fnm:perform-action-module:httpclient')
 
 export class HttpClient implements Client {
@@ -86,7 +87,7 @@ export class HttpClient implements Client {
             pamLog('Login failed: %s', er)
             reject(
               new GEPAMError(
-                'ERROR: Unable to log in: ' + er.toString(),
+                'Unable to log in: ' + er.toString(),
                 GEPAMErrorCodes.NETWORK_ERROR
               ).toJSON()
             )

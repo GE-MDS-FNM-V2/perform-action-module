@@ -1,6 +1,15 @@
 import { HttpClient } from './httpclient'
 import { ProtocolType } from '../enums/enums'
-import { v1, ActionTypeV1, CommunicationMethodV1, ProtocolV1 } from '@ge-fnm/action-object'
+import {
+  v1,
+  ActionTypeV1,
+  CommunicationMethodV1,
+  ProtocolV1,
+  GEErrors
+} from '@ge-fnm/action-object'
+
+const GEPAMError = GEErrors.GEPAMError
+const GEPAMErrorCodes = GEErrors.GEPAMErrorCodes
 
 describe('HTTP Client', () => {
   it('Can properly log into a radio', async () => {
@@ -11,18 +20,6 @@ describe('HTTP Client', () => {
         await client.killsession().catch(error => {
           console.log('Unable to kill session 3: ' + error)
         })
-      })
-      .catch(error => {
-        fail(error)
-      })
-  })
-
-  it('Passes when no session exists when killing a session', async () => {
-    let client = new HttpClient('98.10.43.107', ProtocolType.JSONRPC, 'admin', 'd0NotCommit')
-    await client
-      .killsession()
-      .then(response => {
-        expect(response)
       })
       .catch(error => {
         fail(error)
@@ -80,36 +77,19 @@ describe('HTTP Client', () => {
         fail('No error when invalid action type')
       })
       .catch(error => {
-        expect(error.toString()).toEqual('Not a valid action type')
+        expect(error).toBeTruthy()
       })
   })
 
-  it('Resolved when login not needed', async () => {
+  it('Resolves as undefined when no need to log in', async () => {
     let client = new HttpClient('0.0.0.0', ProtocolType.JSONRPC)
     await client
       .login()
       .then(response => {
-        expect(response).toEqual('No need to log in')
+        expect(response).toEqual(undefined)
       })
       .catch(error => {
         fail(error)
-      })
-  })
-
-  it('Resolved when login fails', async () => {
-    let client = new HttpClient('98.10.43.107', ProtocolType.JSONRPC, 'admin', 'admin')
-    await client
-      .login()
-      .then(response => {
-        expect(response).toEqual(
-          'Login failed for http://98.10.43.107/jsonrpc please check client data'
-        )
-      })
-      .catch(error => {
-        // handles timeout
-        expect(error).toEqual(
-          'ERROR: Unable to log in: TypeError: Cannot convert undefined or null to object'
-        )
       })
   })
 

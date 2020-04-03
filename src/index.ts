@@ -1,11 +1,12 @@
 import { HttpClient } from './clients/httpclient'
 import { Client } from './clients/client'
 import { ClientType } from './enums/enums'
-import { v1, ActionTypeV1, ActionObjectInformationV1 } from '@ge-fnm/action-object'
+import { v1, ActionTypeV1, GEErrors } from '@ge-fnm/action-object'
 import { TSMap } from 'typescript-map'
 import { debug } from 'debug'
-import { GEPAMError, GEPAMErrorCodes } from '@ge-fnm/action-object/dist/types/GEError'
 
+const GEPAMError = GEErrors.GEPAMError
+const GEPAMErrorCodes = GEErrors.GEPAMErrorCodes
 export const pamLog = debug('ge-fnm:perform-action-module:executer')
 
 export class Executer {

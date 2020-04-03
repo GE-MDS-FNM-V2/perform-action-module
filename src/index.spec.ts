@@ -8,13 +8,11 @@ import {
   ActionObjectInformationV1
 } from '@ge-fnm/action-object'
 import { promises as fsPromises } from 'fs'
-// import { isBrowser, isNode } from 'browser-or-node'
 
 jest.setTimeout(30000)
 
 describe('Perform Action Module', () => {
-  // perform-action-module
-  it('Can create executer and add a Client', async () => {
+  it('Errors when addclient cannot reach a radio', async () => {
     let executer = new Executer()
     await executer
       .addclient('0.0.0.0', ClientType.HTTP, ProtocolType.JSONRPC, 'admin', 'admin')
@@ -22,7 +20,7 @@ describe('Perform Action Module', () => {
         fail('Invalid client didnt reject')
       })
       .catch(error => {
-        expect(error).toEqual('ERROR: Unable to log in: Error: connect ECONNREFUSED 0.0.0.0:80')
+        expect(error.message).toEqual('Unable to log in: Error: connect ECONNREFUSED 0.0.0.0:80')
       })
   })
 
@@ -153,7 +151,7 @@ describe('Perform Action Module', () => {
       })
   })
 
-  it('Fails when action object has no path', async () => {
+  it('Errors when action object has no path', async () => {
     let executer = new Executer()
     let URL = '98.10.43.107'
     await executer
@@ -182,7 +180,7 @@ describe('Perform Action Module', () => {
           .catch(error => {
             let actionObjJson: ActionObjectInformationV1 = JSON.parse(error.toString())
             if (actionObjJson.response !== undefined) {
-              expect(actionObjJson.response.error).toEqual('GET/SET commands need a path')
+              expect(actionObjJson.response.error.message).toEqual('GET/SET commands need a path')
             } else {
               fail('No error thrown when action object as no path')
             }
@@ -302,7 +300,7 @@ describe('Perform Action Module', () => {
         fail('No error from killClientSession on undefined radio')
       })
       .catch(error => {
-        expect(error).toEqual('No client session')
+        expect(error).toBeTruthy()
       })
   })
 })
