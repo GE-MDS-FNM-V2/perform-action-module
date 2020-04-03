@@ -22,7 +22,7 @@
   "scripts": {
     "lint": "tslint  --project tsconfig.json -t codeFrame 'src/**/*.ts' 'test/**/*.ts'",
     "prebuild": "rimraf dist",
-    "docs": "typedoc --out docs --target es6 --theme minimal --mode file src",
+    "docs": "typedoc --out docs --exclude \"**/*.spec.ts\" --target es6 --theme minimal --mode file src",
     "build": "webpack && npm run docs",
     "test": "jest --coverage",
     "test:watch": "jest --coverage --watch --verbose",
@@ -33,7 +33,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "npm run docs && git add docs && lint-staged",
+      "pre-commit": "lint-staged",
       "prepare-commit-msg": "exec < /dev/tty && git cz --hook || true",
       "commit-msg": "commitlint -E  HUSKY_GIT_PARAMS"
     }

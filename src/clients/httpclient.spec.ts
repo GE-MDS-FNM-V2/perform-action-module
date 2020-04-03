@@ -80,7 +80,7 @@ describe('HTTP Client', () => {
         fail('No error when invalid action type')
       })
       .catch(error => {
-        expect(error.toString()).toEqual('Error: Not a valid action type')
+        expect(error.toString()).toEqual('Not a valid action type')
       })
   })
 

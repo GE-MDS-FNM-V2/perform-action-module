@@ -73,7 +73,6 @@ export class Executer {
             resolve(actionObj.serialize())
           })
           .catch(addClientError => {
-            // Either Axios error (connection refused), or Protocol is invalid
             /* istanbul ignore next */
             addClientError = addClientError.toString()
             /* istanbul ignore next */
@@ -90,22 +89,21 @@ export class Executer {
           this.clientObjs
             .get(key)
             .call(actionObj.information)
-            .then(getSetResponse => {
+            .then(response => {
               // Action succeeded
               // Commented out due to excesively large response with getSchema
-              // pamLog('Received response from the radio: %s', getSetResponse)
+              // pamLog('Received response from the radio: %s', response)
               actionObj.information.response = {
-                data: getSetResponse,
+                data: response,
                 error: null
               }
               resolve(actionObj.serialize())
             })
-            .catch(getSetError => {
-              // Axios error (connection refused), invalid action type, Not logged in
-              pamLog('Received the following ERROR: %s', getSetError)
+            .catch(error => {
+              pamLog('Received the following ERROR: %s', error)
               /* istanbul ignore next */
               actionObj.information.response = {
-                error: getSetError.toString(),
+                error: error,
                 data: null
               }
               reject(actionObj.serialize())

@@ -109,7 +109,7 @@ describe('Perform Action Module', () => {
         if (actionobj.information.response !== undefined) {
           await fsPromises.writeFile(
             __dirname + '/../test/log/can_call_two_GET_commands/output1.txt',
-            actionobj.information.response.data
+            JSON.stringify(actionobj.information.response.data)
           )
         } else {
           fail('No response data')
@@ -142,7 +142,7 @@ describe('Perform Action Module', () => {
         if (actionobj.information.response !== undefined) {
           await fsPromises.writeFile(
             __dirname + '/../test/log/can_call_two_GET_commands/output2.txt',
-            actionobj.information.response.data
+            JSON.stringify(actionobj.information.response.data)
           )
         } else {
           fail('No response data')
@@ -182,9 +182,7 @@ describe('Perform Action Module', () => {
           .catch(error => {
             let actionObjJson: ActionObjectInformationV1 = JSON.parse(error.toString())
             if (actionObjJson.response !== undefined) {
-              expect(JSON.stringify(actionObjJson.response.error)).toEqual(
-                '"Error: GET/SET commands need a path"'
-              )
+              expect(actionObjJson.response.error).toEqual('GET/SET commands need a path')
             } else {
               fail('No error thrown when action object as no path')
             }

@@ -1,5 +1,5 @@
 import { Jsonrpc } from '../protocols/jsonrpc'
-import Axios, { AxiosRequestConfig, AxiosInstance } from 'axios'
+import Axios, { AxiosRequestConfig, AxiosInstance, AxiosResponse } from 'axios'
 import { Client } from './client'
 import { transType } from '../enums/enums'
 import { ActionTypeV1, ActionObjectInformationV1 } from '@ge-fnm/action-object'
@@ -35,7 +35,7 @@ export class HttpClient implements Client {
     )
     // This needs to be changed to an if statement after more http protocols are added
     this.protocol = new Jsonrpc(username, password)
-    this.uri = this.protocol.getURL(uri)
+    this.uri = this.protocol.getURI(uri)
     this.config = this.protocol.config()
     this.axiosSession = Axios.create(this.config)
     this.username = username
@@ -60,7 +60,6 @@ export class HttpClient implements Client {
           .post(this.uri, loginCmd)
           .then(response => {
             pamLog('Received the following login response: %O', response.data)
-            let responseStr = JSON.stringify(response.data)
             /* istanbul ignore next */
             if (Object.keys(response.data.result).length === 0 && !('error' in response.data)) {
               pamLog('Login successful')
@@ -70,11 +69,11 @@ export class HttpClient implements Client {
               if (tokens !== null) {
                 this.axiosSession.defaults.headers.Cookie = tokens[0]
               }
-              resolve(responseStr)
+              resolve('Successfully logged in')
             } else {
               /* istanbul ignore next */
               pamLog('Login failed')
-              resolve(`Login failed for ${this.uri} please check client data`)
+              reject(`Login failed for ${this.uri} please check client data`)
             }
           })
           .catch(er => {
@@ -94,7 +93,7 @@ export class HttpClient implements Client {
    * Returns a promise with radio response
    * @param action the action object information
    */
-  async call(action: ActionObjectInformationV1): Promise<string> {
+  async call(action: ActionObjectInformationV1): Promise<object> {
     let transCmd = undefined
     let type: transType = transType.GET // default to GET
     pamLog('Received action obj: \n%s', action)
@@ -108,65 +107,60 @@ export class HttpClient implements Client {
         transCmd = this.protocol.transaction(transType.SET)
         type = transType.SET
       } else {
-        throw new Error('Not a valid action type')
+        return Promise.reject('Not a valid action type')
       }
+
+      // Configure protocol to start sending commands to radio
       pamLog('Transaction Command:\n%O', transCmd)
-      let transResponse = await this.axiosSession.post(this.uri, transCmd)
-      pamLog('Received the following transaction response: %O', transResponse.data)
-      this.protocol.setTrans(transResponse.data)
+      let transResponse = await this.deliverPayload(transCmd, 'transaction')
+      this.protocol.setTrans(transResponse)
       let path: string[] | undefined = action.path
       if (path !== undefined) {
         pamLog('Setting path to %s', path.toString())
         this.protocol.setPath(path)
       } else {
-        throw new Error('GET/SET commands need a path')
+        return Promise.reject('GET/SET commands need a path')
       }
 
       if (type === transType.GET) {
         let schemaCmd = this.protocol.getSchema()
         pamLog('Get schema Command:\n%O', schemaCmd)
-        return new Promise<string>((resolve, reject) => {
-          this.axiosSession
-            .post(this.uri, schemaCmd)
-            .then(actionResponse => {
-              // pamLog('Received the following transaction response: %s', transResponse)
-              let actionResponseStr = JSON.stringify(actionResponse.data)
-              resolve(actionResponseStr)
-            })
-            .catch(error => {
-              /* istanbul ignore next */
-              reject(error)
-            })
-        })
+        return this.deliverPayload(schemaCmd)
       } else {
         // Else this is a set command...
+        // Grab payloads from protocol
         let setCmd = this.protocol.setValues(action.modifyingValue)
         pamLog('Set values Command:\n%O', setCmd)
         let validateCmd = this.protocol.validateCommit()
         pamLog('Validate commit Command:\n%O', validateCmd)
         let commitCmd = this.protocol.commit()
         pamLog('Commit Command:\n%O', commitCmd)
-        let setResponse = await this.axiosSession.post(this.uri, setCmd)
-        pamLog('Received the following set values response:\n%O', setResponse.data)
-        let validResponse = await this.axiosSession.post(this.uri, validateCmd)
-        pamLog('Received the following set values response:\n%O', validResponse.data)
-        return new Promise<string>((resolve, reject) => {
-          this.axiosSession
-            .post(this.uri, commitCmd)
-            .then(commitResponse => {
-              pamLog('Received the following commit response:\n%O', commitResponse.data)
-              let actionResponseStr = JSON.stringify(commitResponse.data)
-              resolve(actionResponseStr)
-            })
-            .catch(error => {
-              /* istanbul ignore next */
-              reject(error)
-            })
-        })
+
+        // Deliver payloads to radio
+        await this.deliverPayload(setCmd, 'set values')
+        await this.deliverPayload(validateCmd, 'validate commit')
+        return this.deliverPayload(commitCmd, 'commit change')
       }
     } else {
       throw new Error("Not logged in, can't do action")
     }
+  }
+
+  /**
+   * Returns a promise with axios response data
+   * Rejects if an error is found in the response
+   * @param payload the payload to send in the post request
+   * @param logName OPTIONAL if you want the response logged, give it a name
+   */
+  async deliverPayload(payload: any, logName?: string): Promise<object> {
+    let response = await this.axiosSession.post(this.uri, payload)
+    if (logName !== undefined) {
+      pamLog('Received the following %s response:\n%O', logName, response.data)
+    }
+    if (this.protocol.handleResponseError(response)) {
+      return Promise.reject(response.data)
+    }
+    return Promise.resolve(response.data)
   }
 
   /**
