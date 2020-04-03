@@ -95,7 +95,7 @@ export class HttpClient implements Client {
       } else {
         this.loggedin = true
         pamLog('Login not needed')
-        resolve(undefined)
+        resolve({})
       }
     })
   }

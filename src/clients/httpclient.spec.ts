@@ -81,12 +81,12 @@ describe('HTTP Client', () => {
       })
   })
 
-  it('Resolves as undefined when no need to log in', async () => {
+  it('Resolves as an empty object when no need to log in', async () => {
     let client = new HttpClient('0.0.0.0', ProtocolType.JSONRPC)
     await client
       .login()
       .then(response => {
-        expect(response).toEqual(undefined)
+        expect(response).toEqual({})
       })
       .catch(error => {
         fail(error)

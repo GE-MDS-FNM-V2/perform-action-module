@@ -67,7 +67,7 @@ export class Executer {
           actionData.commData.password
         )
           .then(addClientresponse => {
-            if (addClientresponse === undefined) {
+            if (addClientresponse === {}) {
               actionObj.information.response = {
                 data: 'Authentication information not given, client added but not authenticated',
                 error: null
