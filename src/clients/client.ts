@@ -10,10 +10,10 @@ export interface Client {
   /**
    * Logs into radio. Returns Radio response
    */
-  login(): Promise<string>
+  login(): Promise<object>
 
   /**
    * Kills current session with radio
    */
-  killsession(): Promise<boolean>
+  killsession(): Promise<object>
 }

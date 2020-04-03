@@ -2,9 +2,10 @@ import { Jsonrpc } from '../protocols/jsonrpc'
 import Axios, { AxiosRequestConfig, AxiosInstance, AxiosResponse } from 'axios'
 import { Client } from './client'
 import { transType } from '../enums/enums'
-import { ActionTypeV1, ActionObjectInformationV1 } from '@ge-fnm/action-object'
+import { ActionTypeV1, ActionObjectInformationV1, GEErrors } from '@ge-fnm/action-object'
 import { HttpProtocol } from '../protocols/httpProtocol'
 import { debug } from 'debug'
+import { GEPAMError, GEPAMErrorCodes, GECSMError } from '@ge-fnm/action-object/dist/types/GEError'
 
 const pamLog = debug('ge-fnm:perform-action-module:httpclient')
 
@@ -45,7 +46,7 @@ export class HttpClient implements Client {
   /**
    * Logs into the radio. Returns a promise with radio response
    */
-  login(): Promise<string> {
+  login(): Promise<object> {
     return new Promise((resolve, reject) => {
       if (this.username !== undefined || this.password !== undefined) {
         pamLog(
@@ -69,21 +70,31 @@ export class HttpClient implements Client {
               if (tokens !== null) {
                 this.axiosSession.defaults.headers.Cookie = tokens[0]
               }
-              resolve('Successfully logged in')
+              resolve(response.data)
             } else {
               /* istanbul ignore next */
               pamLog('Login failed')
-              reject(`Login failed for ${this.uri} please check client data`)
+              reject(
+                new GEPAMError(
+                  `Login failed for ${this.uri} please check client data`,
+                  GEPAMErrorCodes.LOGIN_FAILED
+                ).toJSON()
+              )
             }
           })
           .catch(er => {
             pamLog('Login failed: %s', er)
-            reject('ERROR: Unable to log in: ' + er)
+            reject(
+              new GEPAMError(
+                'ERROR: Unable to log in: ' + er.toString(),
+                GEPAMErrorCodes.NETWORK_ERROR
+              ).toJSON()
+            )
           })
       } else {
         this.loggedin = true
         pamLog('Login not needed')
-        resolve('No need to log in')
+        resolve(undefined)
       }
     })
   }
@@ -107,7 +118,12 @@ export class HttpClient implements Client {
         transCmd = this.protocol.transaction(transType.SET)
         type = transType.SET
       } else {
-        return Promise.reject('Not a valid action type')
+        return Promise.reject(
+          new GEPAMError(
+            'Received invalid action object type',
+            GEPAMErrorCodes.UNSUPPORTED_ACTION_TYPE
+          ).toJSON()
+        )
       }
 
       // Configure protocol to start sending commands to radio
@@ -119,13 +135,15 @@ export class HttpClient implements Client {
         pamLog('Setting path to %s', path.toString())
         this.protocol.setPath(path)
       } else {
-        return Promise.reject('GET/SET commands need a path')
+        return Promise.reject(
+          new GEPAMError('GET/SET commands need a path', GEPAMErrorCodes.INVALID_ACTION).toJSON()
+        )
       }
 
       if (type === transType.GET) {
         let schemaCmd = this.protocol.getSchema()
         pamLog('Get schema Command:\n%O', schemaCmd)
-        return this.deliverPayload(schemaCmd)
+        return this.deliverPayload(schemaCmd, 'get schema', false)
       } else {
         // Else this is a set command...
         // Grab payloads from protocol
@@ -150,17 +168,35 @@ export class HttpClient implements Client {
    * Returns a promise with axios response data
    * Rejects if an error is found in the response
    * @param payload the payload to send in the post request
-   * @param logName OPTIONAL if you want the response logged, give it a name
+   * @param name the name of the command
+   * @param log OPTIONAL flag if you want response logged or not. Default is true
    */
-  async deliverPayload(payload: any, logName?: string): Promise<object> {
-    let response = await this.axiosSession.post(this.uri, payload)
-    if (logName !== undefined) {
-      pamLog('Received the following %s response:\n%O', logName, response.data)
-    }
-    if (this.protocol.handleResponseError(response)) {
-      return Promise.reject(response.data)
-    }
-    return Promise.resolve(response.data)
+  async deliverPayload(payload: any, name: string, log = true): Promise<object> {
+    return this.axiosSession
+      .post(this.uri, payload)
+      .then(response => {
+        if (log) {
+          pamLog('Received the following %s response:\n%O', name, response.data)
+        }
+        if (this.protocol.handleResponseError(response)) {
+          return Promise.reject(
+            new GEPAMError(
+              `Error calling ${name} cmd. Radio response: ${response.data}`,
+              GEPAMErrorCodes.RADIO_ERROR
+            ).toJSON()
+          )
+        } else {
+          return Promise.resolve(response.data)
+        }
+      })
+      .catch(error => {
+        return Promise.reject(
+          new GEPAMError(
+            `Error reaching radio with ${name} cmd. Response: ${error}`,
+            GEPAMErrorCodes.NETWORK_ERROR
+          ).toJSON()
+        )
+      })
   }
 
   /**
@@ -185,18 +221,7 @@ export class HttpClient implements Client {
   /**
    * Kills current client session. Returns a promise with radio response
    */
-  killsession(): Promise<boolean> {
-    return new Promise((resolve, reject) => {
-      let logout = this.protocol.logout()
-      this.axiosSession
-        .post(this.uri, logout)
-        .then(response => {
-          resolve(true)
-        })
-        .catch(error => {
-          /* istanbul ignore next */
-          reject(error)
-        })
-    })
+  killsession(): Promise<object> {
+    return this.deliverPayload(this.protocol.logout(), 'Kill Session')
   }
 }

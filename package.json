@@ -111,13 +111,13 @@
     }
   },
   "peerDependencies": {
-    "@ge-fnm/action-object": "^4.0.0",
+    "@ge-fnm/action-object": "^4.3.0",
     "axios": "^0.19.2"
   },
   "devDependencies": {
     "@commitlint/cli": "^8.3.5",
     "@commitlint/config-conventional": "^8.3.4",
-    "@ge-fnm/action-object": "^4.0.0",
+    "@ge-fnm/action-object": "^4.3.0",
     "@types/debug": "^4.1.5",
     "@types/jest": "^25.1.2",
     "@types/node": "^13.7.0",

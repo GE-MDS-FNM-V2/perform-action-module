@@ -4,6 +4,7 @@ import { ClientType } from './enums/enums'
 import { v1, ActionTypeV1, ActionObjectInformationV1 } from '@ge-fnm/action-object'
 import { TSMap } from 'typescript-map'
 import { debug } from 'debug'
+import { GEPAMError, GEPAMErrorCodes } from '@ge-fnm/action-object/dist/types/GEError'
 
 export const pamLog = debug('ge-fnm:perform-action-module:executer')
 
@@ -26,7 +27,7 @@ export class Executer {
     protocol: string,
     username?: string,
     password?: string
-  ): Promise<string> {
+  ): Promise<object> {
     pamLog(
       'Adding client with uri: %s type: %s protocol: %s username: %s password: %s',
       uri,
@@ -65,19 +66,23 @@ export class Executer {
           actionData.commData.password
         )
           .then(addClientresponse => {
-            // Either Login failed, or login succeeded, or no need to login
-            actionObj.information.response = {
-              data: addClientresponse,
-              error: null
+            if (addClientresponse === undefined) {
+              actionObj.information.response = {
+                data: 'Authentication information not given, client added but not authenticated',
+                error: null
+              }
+            } else {
+              actionObj.information.response = {
+                data: addClientresponse,
+                error: null
+              }
             }
             resolve(actionObj.serialize())
           })
           .catch(addClientError => {
             /* istanbul ignore next */
-            addClientError = addClientError.toString()
-            /* istanbul ignore next */
             actionObj.information.response = {
-              error: `Error while adding client with uri ${key}. ${addClientError}`,
+              error: addClientError,
               data: null
             }
             /* istanbul ignore next */
@@ -111,7 +116,10 @@ export class Executer {
         } else {
           pamLog('No initiated client found with uri: %s', key)
           actionObj.information.response = {
-            error: 'Not a valid radio uri. Please initialize radio before sending commands',
+            error: new GEPAMError(
+              `No initialized radio with uri ${key}. Please initialize the radio first.`,
+              GEPAMErrorCodes.RADIO_UNINITIALIZED
+            ).toJSON(),
             data: null
           }
           reject(actionObj.serialize())
@@ -121,31 +129,20 @@ export class Executer {
   }
 
   /**
-   * Kills the current session for the client
+   * Kills the current session for the client. Used mainly for testing purposes
    * Returns radio response
    * @param uri the serial port or ip address of the client
    */
-  killClientSession(uri: string): Promise<boolean> {
+  killClientSession(uri: string): Promise<object> {
     pamLog('Killing session for client with uri: %s', uri)
-    return new Promise((resolve, rejects) => {
-      if (this.clientObjs.has(uri)) {
-        pamLog('Found initiated client with uri: %s', uri)
-        this.clientObjs
-          .get(uri)
-          .killsession()
-          .then(response => {
-            pamLog('Kill session radio response: %s', response)
-            resolve(response)
-          })
-          .catch(error => {
-            /* istanbul ignore next */
-            pamLog('ERROR killing session: %s', error)
-            /* istanbul ignore next */
-            rejects(error)
-          })
-      }
-      pamLog('No initiated client found with uri: %s', uri)
-      rejects('No client session')
-    })
+    if (this.clientObjs.has(uri)) {
+      return this.clientObjs.get(uri).killsession()
+    }
+    return Promise.reject(
+      new GEPAMError(
+        `No client session to kill for uri: ${uri}`,
+        GEPAMErrorCodes.KILL_CLIENT_SESSION_ERROR
+      )
+    )
   }
 }
