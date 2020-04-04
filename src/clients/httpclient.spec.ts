@@ -106,7 +106,7 @@ describe('HTTP Client', () => {
 
   it('Deliver payload rejects when radio returns an error', async () => {
     let client = new HttpClient('98.10.43.107', ProtocolType.JSONRPC, 'admin', 'd0NotCommit')
-    await client.login().catch(error => fail('Log in failed'))
+    await client.login().catch(error => fail('Log in failed: ' + error))
     let badPayload = { This: 'Is a bad payload' }
     await client
       .deliverPayload(badPayload, 'bad payload')
