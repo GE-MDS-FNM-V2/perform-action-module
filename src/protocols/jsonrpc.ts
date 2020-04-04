@@ -5,6 +5,10 @@ import debug from 'debug'
 
 const pamLog = debug('ge-fnm:perform-action-module:jsonrpc')
 
+/**
+ * This protocol class holds all the JSONRPC payload logic needed
+ * To communicate with a GE radio
+ */
 export class Jsonrpc implements HttpProtocol {
   private th: number | undefined
   private cmdID: number

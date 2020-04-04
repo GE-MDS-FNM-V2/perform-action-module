@@ -10,6 +10,11 @@ const GEPAMError = GEErrors.GEPAMError
 const GEPAMErrorCodes = GEErrors.GEPAMErrorCodes
 const pamLog = debug('ge-fnm:perform-action-module:httpclient')
 
+/**
+ * This class is responsible for sending http request to radios.
+ * The payloads for the requests is determined by which protocol
+ * You initate the client with
+ */
 export class HttpClient implements Client {
   private axiosSession: AxiosInstance
   private config: AxiosRequestConfig = {}
@@ -62,18 +67,18 @@ export class HttpClient implements Client {
           .post(this.uri, loginCmd)
           .then(response => {
             pamLog('Received the following login response: %O', response.data)
+            // Logic for handling cookies whether in browser or not.
+            // Currently untestable, remove this in future
             /* istanbul ignore next */
             if (Object.keys(response.data.result).length === 0 && !('error' in response.data)) {
               pamLog('Login successful')
               this.loggedin = true
               let tokens = this.tokenPattern.exec(response.headers['set-cookie'])
-              /* istanbul ignore next */
               if (tokens !== null) {
                 this.axiosSession.defaults.headers.Cookie = tokens[0]
               }
               resolve(response.data)
             } else {
-              /* istanbul ignore next */
               pamLog('Login failed')
               reject(
                 new GEPAMError(
@@ -180,9 +185,10 @@ export class HttpClient implements Client {
           pamLog('Received the following %s response:\n%O', name, response.data)
         }
         if (this.protocol.handleResponseError(response)) {
+          let responseStr = JSON.stringify(response.data)
           return Promise.reject(
             new GEPAMError(
-              `Error calling ${name} cmd. Radio response: ${response.data}`,
+              `Error calling ${name} cmd. Radio response: ` + responseStr,
               GEPAMErrorCodes.RADIO_ERROR
             ).toJSON()
           )
@@ -191,6 +197,9 @@ export class HttpClient implements Client {
         }
       })
       .catch(error => {
+        if (error.status === 405) {
+          return Promise.reject(error)
+        }
         return Promise.reject(
           new GEPAMError(
             `Error reaching radio with ${name} cmd. Response: ${error}`,

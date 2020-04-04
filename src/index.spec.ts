@@ -8,6 +8,7 @@ import {
   ActionObjectInformationV1
 } from '@ge-fnm/action-object'
 import { promises as fsPromises } from 'fs'
+import { PassThrough } from 'stream'
 
 jest.setTimeout(30000)
 
@@ -289,6 +290,70 @@ describe('Perform Action Module', () => {
           console.log('Unable to kill session 3: ' + error2)
         })
         fail(error)
+      })
+  })
+
+  it('Rejects initializing an unreachable radio', async () => {
+    const executer = new Executer()
+    const URL = '0.0.0.0'
+    let action = v1.create({
+      version: 1,
+      actionType: ActionTypeV1.INIT,
+      commData: {
+        commMethod: CommunicationMethodV1.HTTP,
+        protocol: ProtocolV1.JSONRPC,
+        username: 'user',
+        password: 'pass'
+      },
+      modifyingValue: '',
+      path: [],
+      response: {
+        error: null,
+        data: null
+      },
+      uri: URL
+    })
+
+    let serilizedAction = action.serialize()
+    await executer
+      .execute(serilizedAction)
+      .then(response => {
+        fail('Did not reject with when unable to reach radio while initializing')
+      })
+      .catch(error => {
+        expect(error).toBeTruthy()
+      })
+  })
+
+  it('Rejects unimplemented client type', async () => {
+    const executer = new Executer()
+    const URL = '0.0.0.0'
+    let action = v1.create({
+      version: 1,
+      actionType: ActionTypeV1.INIT,
+      commData: {
+        commMethod: CommunicationMethodV1.SERIAL,
+        protocol: ProtocolV1.JSONRPC,
+        username: 'user',
+        password: 'pass'
+      },
+      modifyingValue: '',
+      path: [],
+      response: {
+        error: null,
+        data: null
+      },
+      uri: URL
+    })
+
+    let serilizedAction = action.serialize()
+    await executer
+      .execute(serilizedAction)
+      .then(response => {
+        fail('Did not reject unimplemented client type')
+      })
+      .catch(error => {
+        expect(error).toBeTruthy()
       })
   })
 

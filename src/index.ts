@@ -4,11 +4,17 @@ import { ClientType } from './enums/enums'
 import { v1, ActionTypeV1, GEErrors } from '@ge-fnm/action-object'
 import { TSMap } from 'typescript-map'
 import { debug } from 'debug'
+import { rejects } from 'assert'
 
 const GEPAMError = GEErrors.GEPAMError
 const GEPAMErrorCodes = GEErrors.GEPAMErrorCodes
 export const pamLog = debug('ge-fnm:perform-action-module:executer')
 
+/**
+ * This class in the main interface to the Perform Action Module
+ * It takes serialized action objects from the Communication Selector Module
+ * And delegates them to the correct client.
+ */
 export class Executer {
   // Initated client objects are held in the MAP. URI is key
   private clientObjs = new TSMap<string, Client>()
@@ -37,10 +43,12 @@ export class Executer {
       username,
       password
     )
-    // remove this ignore later when wehave other client types
-    /* istanbul ignore next */
     if (type === ClientType.HTTP) {
       this.clientObjs.set(uri, new HttpClient(uri, protocol, username, password))
+    } else {
+      return Promise.reject(
+        new GEPAMError('Unimplemented client type' + type, GEPAMErrorCodes.UNKOWN_CLIENT_TYPE)
+      )
     }
     return this.clientObjs.get(uri).login()
   }
@@ -67,6 +75,8 @@ export class Executer {
           actionData.commData.password
         )
           .then(addClientresponse => {
+            // untestable at the moment. We need a radio with no username or password
+            /* istanbul ignore next */
             if (addClientresponse === {}) {
               actionObj.information.response = {
                 data: 'Authentication information not given, client added but not authenticated',
@@ -81,12 +91,10 @@ export class Executer {
             resolve(actionObj.serialize())
           })
           .catch(addClientError => {
-            /* istanbul ignore next */
             actionObj.information.response = {
               error: addClientError,
               data: null
             }
-            /* istanbul ignore next */
             reject(actionObj.serialize())
           })
       } else {
@@ -107,7 +115,6 @@ export class Executer {
             })
             .catch(error => {
               pamLog('Received the following ERROR: %s', error)
-              /* istanbul ignore next */
               actionObj.information.response = {
                 error: error,
                 data: null

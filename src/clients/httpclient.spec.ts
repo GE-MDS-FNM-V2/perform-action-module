@@ -18,7 +18,7 @@ describe('HTTP Client', () => {
       .login()
       .then(async response => {
         await client.killsession().catch(error => {
-          console.log('Unable to kill session 3: ' + error)
+          console.log(error)
         })
       })
       .catch(error => {
@@ -102,5 +102,24 @@ describe('HTTP Client', () => {
   it('Has loggedin set to false by default', () => {
     let client = new HttpClient('0.0.0.0', ProtocolType.JSONRPC)
     expect(client.getLoginStatus()).toEqual(false)
+  })
+
+  it('Deliver payload rejects when radio returns an error', async () => {
+    let client = new HttpClient('98.10.43.107', ProtocolType.JSONRPC, 'admin', 'd0NotCommit')
+    await client.login().catch(error => fail('Log in failed'))
+    let badPayload = { This: 'Is a bad payload' }
+    await client
+      .deliverPayload(badPayload, 'bad payload')
+      .then(response => fail('Did not reject: ' + JSON.stringify(response)))
+      .catch(error => expect(error.status).toEqual(405))
+  })
+
+  it('Deliver payload rejects when radio does not respond', async () => {
+    let client = new HttpClient('0.0.0.0', ProtocolType.JSONRPC, 'user', 'pass')
+    let badPayload = { This: 'Is a bad payload' }
+    await client
+      .deliverPayload(badPayload, 'bad payload')
+      .then(response => fail('Did not reject: ' + JSON.stringify(response)))
+      .catch(error => expect(error.status).toEqual(500))
   })
 })
