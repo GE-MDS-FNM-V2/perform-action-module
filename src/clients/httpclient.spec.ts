@@ -107,19 +107,23 @@ describe('HTTP Client', () => {
   it('Deliver payload rejects when radio returns an error', async () => {
     let client = new HttpClient('98.10.43.107', ProtocolType.JSONRPC, 'admin', 'd0NotCommit')
     await client.login().catch(error => fail('Log in failed: ' + error))
-    let badPayload = { This: 'Is a bad payload' }
-    await client
-      .deliverPayload(badPayload, 'bad payload')
-      .then(response => fail('Did not reject: ' + JSON.stringify(response)))
-      .catch(error => expect(error.status).toEqual(405))
+    let badPayload = { 'This, ': 'Is a bad payload' }
+    try {
+      await client.deliverPayload(badPayload, 'bad payload')
+      expect(true).toEqual(false)
+    } catch (e) {
+      expect(e.status).toEqual(405)
+    }
   })
 
   it('Deliver payload rejects when radio does not respond', async () => {
     let client = new HttpClient('0.0.0.0', ProtocolType.JSONRPC, 'user', 'pass')
-    let badPayload = { This: 'Is a bad payload' }
-    await client
-      .deliverPayload(badPayload, 'bad payload')
-      .then(response => fail('Did not reject: ' + JSON.stringify(response)))
-      .catch(error => expect(error.status).toEqual(500))
+    let badPayload = { 'This, ': 'Is a bad payload' }
+    try {
+      await client.deliverPayload(badPayload, 'bad payload')
+      expect(true).toEqual(false)
+    } catch (e) {
+      expect(e.status).toEqual(500)
+    }
   })
 })

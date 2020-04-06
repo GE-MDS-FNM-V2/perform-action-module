@@ -8,7 +8,6 @@ import {
   ActionObjectInformationV1
 } from '@ge-fnm/action-object'
 import { promises as fsPromises } from 'fs'
-import { PassThrough } from 'stream'
 
 jest.setTimeout(30000)
 
@@ -175,11 +174,11 @@ describe('Perform Action Module', () => {
         let serilizedAction = action.serialize()
         await executer
           .execute(serilizedAction)
-          .then(async response => {
+          .then(response => {
             fail('No error when no action path: ' + response)
           })
           .catch(error => {
-            let actionObjJson: ActionObjectInformationV1 = JSON.parse(error.toString())
+            let actionObjJson: ActionObjectInformationV1 = error.information
             if (actionObjJson.response !== undefined) {
               expect(actionObjJson.response.error.message).toEqual('GET/SET commands need a path')
             } else {

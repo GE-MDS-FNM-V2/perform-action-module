@@ -58,7 +58,7 @@ export class Executer {
    * Returns serialized action object with response or error
    * @param action serialized action object
    */
-  execute(action: string): Promise<string> {
+  execute(action: any): Promise<any> {
     pamLog('Executing serialized action object:\n%s', action)
     return new Promise((resolve, reject) => {
       let actionObj = v1.deserialize(action)
@@ -127,7 +127,7 @@ export class Executer {
             error: new GEPAMError(
               `No initialized radio with uri ${key}. Please initialize the radio first.`,
               GEPAMErrorCodes.RADIO_UNINITIALIZED
-            ).toJSON(),
+            ),
             data: null
           }
           reject(actionObj.serialize())

@@ -84,17 +84,14 @@ export class HttpClient implements Client {
                 new GEPAMError(
                   `Login failed for ${this.uri} please check client data`,
                   GEPAMErrorCodes.LOGIN_FAILED
-                ).toJSON()
+                )
               )
             }
           })
           .catch(er => {
             pamLog('Login failed: %s', er)
             reject(
-              new GEPAMError(
-                'Unable to log in: ' + er.toString(),
-                GEPAMErrorCodes.NETWORK_ERROR
-              ).toJSON()
+              new GEPAMError('Unable to log in: ' + er.toString(), GEPAMErrorCodes.NETWORK_ERROR)
             )
           })
       } else {
@@ -128,7 +125,7 @@ export class HttpClient implements Client {
           new GEPAMError(
             'Received invalid action object type',
             GEPAMErrorCodes.UNSUPPORTED_ACTION_TYPE
-          ).toJSON()
+          )
         )
       }
 
@@ -142,7 +139,7 @@ export class HttpClient implements Client {
         this.protocol.setPath(path)
       } else {
         return Promise.reject(
-          new GEPAMError('GET/SET commands need a path', GEPAMErrorCodes.INVALID_ACTION).toJSON()
+          new GEPAMError('GET/SET commands need a path', GEPAMErrorCodes.INVALID_ACTION)
         )
       }
 
@@ -190,7 +187,7 @@ export class HttpClient implements Client {
             new GEPAMError(
               `Error calling ${name} cmd. Radio response: ` + responseStr,
               GEPAMErrorCodes.RADIO_ERROR
-            ).toJSON()
+            )
           )
         } else {
           return Promise.resolve(response.data)
@@ -204,7 +201,7 @@ export class HttpClient implements Client {
           new GEPAMError(
             `Error reaching radio with ${name} cmd. Response: ${error}`,
             GEPAMErrorCodes.NETWORK_ERROR
-          ).toJSON()
+          )
         )
       })
   }
