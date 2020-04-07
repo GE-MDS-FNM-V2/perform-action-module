@@ -242,17 +242,15 @@ describe('Perform Action Module', () => {
       uri: URL
     })
     let serilizedAction = action.serialize()
-    await executer
-      .execute(serilizedAction)
-      .then(async response => {
-        await executer.killClientSession(URL).catch(error => {
-          console.log('Unable to kill session 2: ' + error)
-        })
-        fail('No error thrown')
+    try {
+      let response = await executer.execute(serilizedAction)
+      await executer.killClientSession(URL).catch(error => {
+        console.log('Unable to kill session 2: ' + error)
       })
-      .catch(async error => {
-        expect(error)
-      })
+      fail('No error thrown')
+    } catch (e) {
+      expect(e).toBeTruthy()
+    }
   })
 
   it('Can create a client from an Action Object', async () => {
