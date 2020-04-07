@@ -1,13 +1,20 @@
 import { Jsonrpc } from '../protocols/jsonrpc'
-import Axios, { AxiosRequestConfig, AxiosInstance } from 'axios'
+import Axios, { AxiosRequestConfig, AxiosInstance, AxiosResponse } from 'axios'
 import { Client } from './client'
 import { transType } from '../enums/enums'
-import { ActionTypeV1, ActionObjectInformationV1 } from '@ge-fnm/action-object'
+import { ActionTypeV1, ActionObjectInformationV1, GEErrors } from '@ge-fnm/action-object'
 import { HttpProtocol } from '../protocols/httpProtocol'
 import { debug } from 'debug'
 
+const GEPAMError = GEErrors.GEPAMError
+const GEPAMErrorCodes = GEErrors.GEPAMErrorCodes
 const pamLog = debug('ge-fnm:perform-action-module:httpclient')
 
+/**
+ * This class is responsible for sending http request to radios.
+ * The payloads for the requests is determined by which protocol
+ * You initate the client with
+ */
 export class HttpClient implements Client {
   private axiosSession: AxiosInstance
   private config: AxiosRequestConfig = {}
@@ -35,7 +42,7 @@ export class HttpClient implements Client {
     )
     // This needs to be changed to an if statement after more http protocols are added
     this.protocol = new Jsonrpc(username, password)
-    this.uri = this.protocol.getURL(uri)
+    this.uri = this.protocol.getURI(uri)
     this.config = this.protocol.config()
     this.axiosSession = Axios.create(this.config)
     this.username = username
@@ -45,7 +52,7 @@ export class HttpClient implements Client {
   /**
    * Logs into the radio. Returns a promise with radio response
    */
-  login(): Promise<string> {
+  login(): Promise<object> {
     return new Promise((resolve, reject) => {
       if (this.username !== undefined || this.password !== undefined) {
         pamLog(
@@ -60,31 +67,37 @@ export class HttpClient implements Client {
           .post(this.uri, loginCmd)
           .then(response => {
             pamLog('Received the following login response: %O', response.data)
-            let responseStr = JSON.stringify(response.data)
+            // Logic for handling cookies whether in browser or not.
+            // Currently untestable, remove this in future
             /* istanbul ignore next */
             if (Object.keys(response.data.result).length === 0 && !('error' in response.data)) {
               pamLog('Login successful')
               this.loggedin = true
               let tokens = this.tokenPattern.exec(response.headers['set-cookie'])
-              /* istanbul ignore next */
               if (tokens !== null) {
                 this.axiosSession.defaults.headers.Cookie = tokens[0]
               }
-              resolve(responseStr)
+              resolve(response.data)
             } else {
-              /* istanbul ignore next */
               pamLog('Login failed')
-              resolve(`Login failed for ${this.uri} please check client data`)
+              reject(
+                new GEPAMError(
+                  `Login failed for ${this.uri} please check client data`,
+                  GEPAMErrorCodes.LOGIN_FAILED
+                )
+              )
             }
           })
           .catch(er => {
             pamLog('Login failed: %s', er)
-            reject('ERROR: Unable to log in: ' + er)
+            reject(
+              new GEPAMError('Unable to log in: ' + er.toString(), GEPAMErrorCodes.NETWORK_ERROR)
+            )
           })
       } else {
         this.loggedin = true
         pamLog('Login not needed')
-        resolve('No need to log in')
+        resolve({})
       }
     })
   }
@@ -94,7 +107,7 @@ export class HttpClient implements Client {
    * Returns a promise with radio response
    * @param action the action object information
    */
-  async call(action: ActionObjectInformationV1): Promise<string> {
+  async call(action: ActionObjectInformationV1): Promise<object> {
     let transCmd = undefined
     let type: transType = transType.GET // default to GET
     pamLog('Received action obj: \n%s', action)
@@ -108,65 +121,89 @@ export class HttpClient implements Client {
         transCmd = this.protocol.transaction(transType.SET)
         type = transType.SET
       } else {
-        throw new Error('Not a valid action type')
+        return Promise.reject(
+          new GEPAMError(
+            'Received invalid action object type',
+            GEPAMErrorCodes.UNSUPPORTED_ACTION_TYPE
+          )
+        )
       }
+
+      // Configure protocol to start sending commands to radio
       pamLog('Transaction Command:\n%O', transCmd)
-      let transResponse = await this.axiosSession.post(this.uri, transCmd)
-      pamLog('Received the following transaction response: %O', transResponse.data)
-      this.protocol.setTrans(transResponse.data)
+      let transResponse = await this.deliverPayload(transCmd, 'transaction')
+      this.protocol.setTrans(transResponse)
       let path: string[] | undefined = action.path
       if (path !== undefined) {
         pamLog('Setting path to %s', path.toString())
         this.protocol.setPath(path)
       } else {
-        throw new Error('GET/SET commands need a path')
+        return Promise.reject(
+          new GEPAMError('GET/SET commands need a path', GEPAMErrorCodes.INVALID_ACTION)
+        )
       }
 
       if (type === transType.GET) {
         let schemaCmd = this.protocol.getSchema()
         pamLog('Get schema Command:\n%O', schemaCmd)
-        return new Promise<string>((resolve, reject) => {
-          this.axiosSession
-            .post(this.uri, schemaCmd)
-            .then(actionResponse => {
-              // pamLog('Received the following transaction response: %s', transResponse)
-              let actionResponseStr = JSON.stringify(actionResponse.data)
-              resolve(actionResponseStr)
-            })
-            .catch(error => {
-              /* istanbul ignore next */
-              reject(error)
-            })
-        })
+        return this.deliverPayload(schemaCmd, 'get schema', false)
       } else {
         // Else this is a set command...
+        // Grab payloads from protocol
         let setCmd = this.protocol.setValues(action.modifyingValue)
         pamLog('Set values Command:\n%O', setCmd)
         let validateCmd = this.protocol.validateCommit()
         pamLog('Validate commit Command:\n%O', validateCmd)
         let commitCmd = this.protocol.commit()
         pamLog('Commit Command:\n%O', commitCmd)
-        let setResponse = await this.axiosSession.post(this.uri, setCmd)
-        pamLog('Received the following set values response:\n%O', setResponse.data)
-        let validResponse = await this.axiosSession.post(this.uri, validateCmd)
-        pamLog('Received the following set values response:\n%O', validResponse.data)
-        return new Promise<string>((resolve, reject) => {
-          this.axiosSession
-            .post(this.uri, commitCmd)
-            .then(commitResponse => {
-              pamLog('Received the following commit response:\n%O', commitResponse.data)
-              let actionResponseStr = JSON.stringify(commitResponse.data)
-              resolve(actionResponseStr)
-            })
-            .catch(error => {
-              /* istanbul ignore next */
-              reject(error)
-            })
-        })
+
+        // Deliver payloads to radio
+        await this.deliverPayload(setCmd, 'set values')
+        await this.deliverPayload(validateCmd, 'validate commit')
+        return this.deliverPayload(commitCmd, 'commit change')
       }
     } else {
       throw new Error("Not logged in, can't do action")
     }
+  }
+
+  /**
+   * Returns a promise with axios response data
+   * Rejects if an error is found in the response
+   * @param payload the payload to send in the post request
+   * @param name the name of the command
+   * @param log OPTIONAL flag if you want response logged or not. Default is true
+   */
+  async deliverPayload(payload: any, name: string, log = true): Promise<object> {
+    return this.axiosSession
+      .post(this.uri, payload)
+      .then(response => {
+        if (log) {
+          pamLog('Received the following %s response:\n%O', name, response.data)
+        }
+        if (this.protocol.handleResponseError(response)) {
+          let responseStr = JSON.stringify(response.data)
+          return Promise.reject(
+            new GEPAMError(
+              `Error calling ${name} cmd. Radio response: ` + responseStr,
+              GEPAMErrorCodes.RADIO_ERROR
+            )
+          )
+        } else {
+          return Promise.resolve(response.data)
+        }
+      })
+      .catch(error => {
+        if (error.status === 405) {
+          return Promise.reject(error)
+        }
+        return Promise.reject(
+          new GEPAMError(
+            `Error reaching radio with ${name} cmd. Response: ${error}`,
+            GEPAMErrorCodes.NETWORK_ERROR
+          )
+        )
+      })
   }
 
   /**
@@ -191,18 +228,7 @@ export class HttpClient implements Client {
   /**
    * Kills current client session. Returns a promise with radio response
    */
-  killsession(): Promise<boolean> {
-    return new Promise((resolve, reject) => {
-      let logout = this.protocol.logout()
-      this.axiosSession
-        .post(this.uri, logout)
-        .then(response => {
-          resolve(true)
-        })
-        .catch(error => {
-          /* istanbul ignore next */
-          reject(error)
-        })
-    })
+  killsession(): Promise<object> {
+    return this.deliverPayload(this.protocol.logout(), 'Kill Session')
   }
 }

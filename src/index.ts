@@ -1,12 +1,20 @@
 import { HttpClient } from './clients/httpclient'
 import { Client } from './clients/client'
 import { ClientType } from './enums/enums'
-import { v1, ActionTypeV1, ActionObjectInformationV1 } from '@ge-fnm/action-object'
+import { v1, ActionTypeV1, GEErrors } from '@ge-fnm/action-object'
 import { TSMap } from 'typescript-map'
 import { debug } from 'debug'
+import { rejects } from 'assert'
 
+const GEPAMError = GEErrors.GEPAMError
+const GEPAMErrorCodes = GEErrors.GEPAMErrorCodes
 export const pamLog = debug('ge-fnm:perform-action-module:executer')
 
+/**
+ * This class in the main interface to the Perform Action Module
+ * It takes serialized action objects from the Communication Selector Module
+ * And delegates them to the correct client.
+ */
 export class Executer {
   // Initated client objects are held in the MAP. URI is key
   private clientObjs = new TSMap<string, Client>()
@@ -26,7 +34,7 @@ export class Executer {
     protocol: string,
     username?: string,
     password?: string
-  ): Promise<string> {
+  ): Promise<object> {
     pamLog(
       'Adding client with uri: %s type: %s protocol: %s username: %s password: %s',
       uri,
@@ -35,10 +43,12 @@ export class Executer {
       username,
       password
     )
-    // remove this ignore later when wehave other client types
-    /* istanbul ignore next */
     if (type === ClientType.HTTP) {
       this.clientObjs.set(uri, new HttpClient(uri, protocol, username, password))
+    } else {
+      return Promise.reject(
+        new GEPAMError('Unimplemented client type' + type, GEPAMErrorCodes.UNKOWN_CLIENT_TYPE)
+      )
     }
     return this.clientObjs.get(uri).login()
   }
@@ -48,7 +58,7 @@ export class Executer {
    * Returns serialized action object with response or error
    * @param action serialized action object
    */
-  execute(action: string): Promise<string> {
+  execute(action: any): Promise<any> {
     pamLog('Executing serialized action object:\n%s', action)
     return new Promise((resolve, reject) => {
       let actionObj = v1.deserialize(action)
@@ -65,23 +75,26 @@ export class Executer {
           actionData.commData.password
         )
           .then(addClientresponse => {
-            // Either Login failed, or login succeeded, or no need to login
-            actionObj.information.response = {
-              data: addClientresponse,
-              error: null
+            // untestable at the moment. We need a radio with no username or password
+            /* istanbul ignore next */
+            if (addClientresponse === {}) {
+              actionObj.information.response = {
+                data: 'Authentication information not given, client added but not authenticated',
+                error: null
+              }
+            } else {
+              actionObj.information.response = {
+                data: addClientresponse,
+                error: null
+              }
             }
             resolve(actionObj.serialize())
           })
           .catch(addClientError => {
-            // Either Axios error (connection refused), or Protocol is invalid
-            /* istanbul ignore next */
-            addClientError = addClientError.toString()
-            /* istanbul ignore next */
             actionObj.information.response = {
-              error: `Error while adding client with uri ${key}. ${addClientError}`,
+              error: addClientError,
               data: null
             }
-            /* istanbul ignore next */
             reject(actionObj.serialize())
           })
       } else {
@@ -90,22 +103,20 @@ export class Executer {
           this.clientObjs
             .get(key)
             .call(actionObj.information)
-            .then(getSetResponse => {
+            .then(response => {
               // Action succeeded
               // Commented out due to excesively large response with getSchema
-              // pamLog('Received response from the radio: %s', getSetResponse)
+              // pamLog('Received response from the radio: %s', response)
               actionObj.information.response = {
-                data: getSetResponse,
+                data: response,
                 error: null
               }
               resolve(actionObj.serialize())
             })
-            .catch(getSetError => {
-              // Axios error (connection refused), invalid action type, Not logged in
-              pamLog('Received the following ERROR: %s', getSetError)
-              /* istanbul ignore next */
+            .catch(error => {
+              pamLog('Received the following ERROR: %s', error)
               actionObj.information.response = {
-                error: getSetError.toString(),
+                error: error,
                 data: null
               }
               reject(actionObj.serialize())
@@ -113,7 +124,10 @@ export class Executer {
         } else {
           pamLog('No initiated client found with uri: %s', key)
           actionObj.information.response = {
-            error: 'Not a valid radio uri. Please initialize radio before sending commands',
+            error: new GEPAMError(
+              `No initialized radio with uri ${key}. Please initialize the radio first.`,
+              GEPAMErrorCodes.RADIO_UNINITIALIZED
+            ),
             data: null
           }
           reject(actionObj.serialize())
@@ -123,31 +137,20 @@ export class Executer {
   }
 
   /**
-   * Kills the current session for the client
+   * Kills the current session for the client. Used mainly for testing purposes
    * Returns radio response
    * @param uri the serial port or ip address of the client
    */
-  killClientSession(uri: string): Promise<boolean> {
+  killClientSession(uri: string): Promise<object> {
     pamLog('Killing session for client with uri: %s', uri)
-    return new Promise((resolve, rejects) => {
-      if (this.clientObjs.has(uri)) {
-        pamLog('Found initiated client with uri: %s', uri)
-        this.clientObjs
-          .get(uri)
-          .killsession()
-          .then(response => {
-            pamLog('Kill session radio response: %s', response)
-            resolve(response)
-          })
-          .catch(error => {
-            /* istanbul ignore next */
-            pamLog('ERROR killing session: %s', error)
-            /* istanbul ignore next */
-            rejects(error)
-          })
-      }
-      pamLog('No initiated client found with uri: %s', uri)
-      rejects('No client session')
-    })
+    if (this.clientObjs.has(uri)) {
+      return this.clientObjs.get(uri).killsession()
+    }
+    return Promise.reject(
+      new GEPAMError(
+        `No client session to kill for uri: ${uri}`,
+        GEPAMErrorCodes.KILL_CLIENT_SESSION_ERROR
+      )
+    )
   }
 }

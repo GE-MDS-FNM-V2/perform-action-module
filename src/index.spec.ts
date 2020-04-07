@@ -8,13 +8,11 @@ import {
   ActionObjectInformationV1
 } from '@ge-fnm/action-object'
 import { promises as fsPromises } from 'fs'
-// import { isBrowser, isNode } from 'browser-or-node'
 
 jest.setTimeout(30000)
 
 describe('Perform Action Module', () => {
-  // perform-action-module
-  it('Can create executer and add a Client', async () => {
+  it('Errors when addclient cannot reach a radio', async () => {
     let executer = new Executer()
     await executer
       .addclient('0.0.0.0', ClientType.HTTP, ProtocolType.JSONRPC, 'admin', 'admin')
@@ -22,7 +20,7 @@ describe('Perform Action Module', () => {
         fail('Invalid client didnt reject')
       })
       .catch(error => {
-        expect(error).toEqual('ERROR: Unable to log in: Error: connect ECONNREFUSED 0.0.0.0:80')
+        expect(error.message).toEqual('Unable to log in: Error: connect ECONNREFUSED 0.0.0.0:80')
       })
   })
 
@@ -109,7 +107,7 @@ describe('Perform Action Module', () => {
         if (actionobj.information.response !== undefined) {
           await fsPromises.writeFile(
             __dirname + '/../test/log/can_call_two_GET_commands/output1.txt',
-            actionobj.information.response.data
+            JSON.stringify(actionobj.information.response.data)
           )
         } else {
           fail('No response data')
@@ -142,7 +140,7 @@ describe('Perform Action Module', () => {
         if (actionobj.information.response !== undefined) {
           await fsPromises.writeFile(
             __dirname + '/../test/log/can_call_two_GET_commands/output2.txt',
-            actionobj.information.response.data
+            JSON.stringify(actionobj.information.response.data)
           )
         } else {
           fail('No response data')
@@ -153,7 +151,7 @@ describe('Perform Action Module', () => {
       })
   })
 
-  it('Fails when action object has no path', async () => {
+  it('Errors when action object has no path', async () => {
     let executer = new Executer()
     let URL = '98.10.43.107'
     await executer
@@ -176,15 +174,13 @@ describe('Perform Action Module', () => {
         let serilizedAction = action.serialize()
         await executer
           .execute(serilizedAction)
-          .then(async response => {
+          .then(response => {
             fail('No error when no action path: ' + response)
           })
           .catch(error => {
-            let actionObjJson: ActionObjectInformationV1 = JSON.parse(error.toString())
+            let actionObjJson: ActionObjectInformationV1 = error.information
             if (actionObjJson.response !== undefined) {
-              expect(JSON.stringify(actionObjJson.response.error)).toEqual(
-                '"Error: GET/SET commands need a path"'
-              )
+              expect(actionObjJson.response.error.message).toEqual('GET/SET commands need a path')
             } else {
               fail('No error thrown when action object as no path')
             }
@@ -296,6 +292,70 @@ describe('Perform Action Module', () => {
       })
   })
 
+  it('Rejects initializing an unreachable radio', async () => {
+    const executer = new Executer()
+    const URL = '0.0.0.0'
+    let action = v1.create({
+      version: 1,
+      actionType: ActionTypeV1.INIT,
+      commData: {
+        commMethod: CommunicationMethodV1.HTTP,
+        protocol: ProtocolV1.JSONRPC,
+        username: 'user',
+        password: 'pass'
+      },
+      modifyingValue: '',
+      path: [],
+      response: {
+        error: null,
+        data: null
+      },
+      uri: URL
+    })
+
+    let serilizedAction = action.serialize()
+    await executer
+      .execute(serilizedAction)
+      .then(response => {
+        fail('Did not reject with when unable to reach radio while initializing')
+      })
+      .catch(error => {
+        expect(error).toBeTruthy()
+      })
+  })
+
+  it('Rejects unimplemented client type', async () => {
+    const executer = new Executer()
+    const URL = '0.0.0.0'
+    let action = v1.create({
+      version: 1,
+      actionType: ActionTypeV1.INIT,
+      commData: {
+        commMethod: CommunicationMethodV1.SERIAL,
+        protocol: ProtocolV1.JSONRPC,
+        username: 'user',
+        password: 'pass'
+      },
+      modifyingValue: '',
+      path: [],
+      response: {
+        error: null,
+        data: null
+      },
+      uri: URL
+    })
+
+    let serilizedAction = action.serialize()
+    await executer
+      .execute(serilizedAction)
+      .then(response => {
+        fail('Did not reject unimplemented client type')
+      })
+      .catch(error => {
+        expect(error).toBeTruthy()
+      })
+  })
+
   it('Rejects killsession when perform action module has no client of given URI', async () => {
     let executer = new Executer()
     await executer
@@ -304,7 +364,7 @@ describe('Perform Action Module', () => {
         fail('No error from killClientSession on undefined radio')
       })
       .catch(error => {
-        expect(error).toEqual('No client session')
+        expect(error).toBeTruthy()
       })
   })
 })
