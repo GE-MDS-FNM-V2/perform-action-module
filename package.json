@@ -112,7 +112,7 @@
   },
   "peerDependencies": {
     "@ge-fnm/action-object": "^4.3.0",
-    "axios": "^0.19.2"
+    "axios": "^0.21.1"
   },
   "devDependencies": {
     "@commitlint/cli": "^8.3.5",
@@ -121,7 +121,7 @@
     "@types/debug": "^4.1.5",
     "@types/jest": "^25.1.2",
     "@types/node": "^13.7.0",
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "commitizen": "^4.0.3",
     "coveralls": "^3.0.9",
     "cross-env": "^7.0.0",
